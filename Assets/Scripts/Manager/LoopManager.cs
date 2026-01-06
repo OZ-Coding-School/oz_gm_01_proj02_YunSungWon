@@ -24,16 +24,34 @@ public class LoopManager : MonoBehaviour
     [SerializeField] private float breakInMinSeconds = 16.0f;
     [SerializeField] private float breakInMaxSeconds = 20.0f;
 
+    [Header("텔레포트 시 y오프셋 조정")]
+    [SerializeField] private float spawnYOffset = 0.5f;
+
+    [Header("루프리셋 중복 방지(쿨타임)")]
+    [SerializeField] private float resetCoolTime = 0.5f;
+
     private float elapsedSeconds;
     private float breakInSeconds;
     private int loopCount;
     private bool breakInTriggered;
+
+    //플레이어 컨트롤러 보관
+    private CharacterController characterController;
+
+    //리셋 중복 방지용 플래그
+    private bool isResetting;
 
     //외부 접근용 프로퍼티
     public float ElapsedSeconds { get { return elapsedSeconds; } }
     public float BreakInSeconds { get { return breakInSeconds; } }
     public int LoopCount { get { return loopCount; } }
     public bool BreakInTriggered { get { return breakInTriggered; } }
+
+    private void Awake()
+    {
+        //컨트롤러는 플레이어쪽의 컴포넌트 가져오고
+        characterController = playerTransform.GetComponent<CharacterController>();
+    }
 
     private void Start()
     {
@@ -70,11 +88,7 @@ public class LoopManager : MonoBehaviour
         breakInSeconds = Random.Range(breakInMinSeconds, breakInMaxSeconds);
         breakInTriggered = false;
 
-        if (playerTransform != null && loopStartPoint != null)
-        {
-            this.playerTransform.position = this.loopStartPoint.position;
-            this.playerTransform.rotation = this.loopStartPoint.rotation;
-        }
+        TeleportPlayerToStart();
 
         OnLoopStart();
     }
@@ -85,8 +99,29 @@ public class LoopManager : MonoBehaviour
     /// <param name="reason"></param>
     public void ResetLoop(string reason)
     {
-        Debug.Log("[LoopManager] 루프 리셋됨 루프된 이유 =" + reason);
+        if (isResetting) return;
+
+        StartCoroutine(LoopResetCo(reason));
+    }
+
+    /// <summary>
+    /// 루프 리셋 요청시 트리거 재진입/연속 호출 방지용 코루틴
+    /// </summary>
+    /// <param name="reason"></param>
+    /// <returns></returns>
+    private IEnumerator LoopResetCo(string reason)
+    {
+        isResetting = true;
+        Debug.Log("[LoopManager] 루프리셋 = " + reason);
+
+        //한프레임 쉬고
+        yield return null;
+
         StartNewLoop();
+
+        //리셋 쿨타임 후 리셋 허용
+        yield return new WaitForSeconds(resetCoolTime);
+        isResetting = false;
     }
 
     /// <summary>
@@ -103,5 +138,39 @@ public class LoopManager : MonoBehaviour
     private void OnBreakInTriggered()
     {
         Debug.Log("[LoopManager] 침입 트리거 발생시점" + elapsedSeconds.ToString("F2") + "s");
+    }
+
+    /// <summary>
+    /// 트래블 슈팅 시도
+    /// 루프가 시작될때, 플레이어 위치가 변하지 않는 상황 간혹 발생
+    /// 캐릭터 컨트롤러와 충돌문제인가 싶어(이동이 중복되는 문제),
+    /// 위치변경시에는 컨트롤러 비활성화, 변경후에 다시 활성화
+    /// </summary>
+    private void TeleportPlayerToStart()
+    {
+        if (playerTransform == null || loopStartPoint == null)
+        {
+            Debug.Log("[LoopManager] 위치변경 실패! = 플레이어 위치값 or 루프시작지점 null!");
+            return;
+        }
+
+        Vector3 targetPos = loopStartPoint.position + (Vector3.up * spawnYOffset);
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+            Debug.Log("[LoopManager] 컨트롤러 비활성화");
+            playerTransform.position = targetPos;
+            playerTransform.rotation = loopStartPoint.rotation;
+            characterController.enabled = true;
+            Debug.Log("[LoopManager] 컨트롤러 활성화");
+        }
+        else
+        {
+            //컨트롤러 없으면 일반 텔레포트 처리
+            playerTransform.position = targetPos;
+            playerTransform.rotation = loopStartPoint.rotation;
+            Debug.Log("[LoopManager] 일반 텔레포트 처리 완료");
+        }
     }
 }
