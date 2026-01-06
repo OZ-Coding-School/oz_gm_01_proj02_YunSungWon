@@ -1,0 +1,274 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 게임의 핵심 시스템 (타이머/침입/리셋) 관리
+/// 1.루프 시작후 침입 타이밍 18초+-2초(16~20초)로 랜덤 설정
+/// 2.시간이 지나면 침입 이벤트 발생-01/06(day1) 일단 로그만 띄우게 구현
+/// 3.특정 조건(현관문 트리거 / 플레이어 사망)에서 루프 리셋 - 01/06(day1) 플레이어 사망은 일단 키 입력으로 테스트
+/// 
+/// 4.배터리 제거 상호작용시 1차 침입 실패, 비상키 침입(추가35~40초)으로 지연됨
+/// 
+/// [사용된 기술]
+/// -상태관리관련 간단한 플래그 전환
+/// -이벤트 연출 포인트
+/// </summary>
+public class LoopManager : MonoBehaviour
+{
+    //침입성공의 방식을 구분하기위한 enum
+    public enum BreakInMethod
+    {
+        DoorLock = 0,
+        EmergencyKey =1
+    }
+
+    //침입단계 명확하게 관리하기 위해서 상태값 enum
+    public enum BreakInPhase
+    {
+        FirstAttempt = 0, //첫 침입
+        WaitingEmergencyKey = 1, // 배터리 제거시 비상키로 침입
+        Done = 2 //침입처리 완료시
+    }
+
+    //=====이벤트(옵저버 패턴) 훅=====//
+    //추후 이벤트 액션으로 들어갈 부분//
+
+    [Header("플레이어 참조")]
+    [SerializeField] private Transform playerTransform;
+
+    [Header("루프 시작 위치")]
+    [SerializeField] private Transform loopStartPoint;
+
+    [Header("1차 침입 시간 설정(최소/최대)")]
+    [SerializeField] private float breakInMinSeconds = 16.0f;
+    [SerializeField] private float breakInMaxSeconds = 20.0f;
+
+    [Header("2차 침입시간 설정(비상키 진입)")]
+    [SerializeField] private float emergencyMinSeconds = 35.0f;
+    [SerializeField] private float emergencyMaxSeconds = 40.0f;
+
+    [Header("텔레포트 시 y오프셋 조정")]
+    [SerializeField] private float spawnYOffset = 0.5f;
+
+    [Header("루프리셋 중복 방지(쿨타임)")]
+    [SerializeField] private float resetCoolTime = 0.5f;
+
+    [Header("루프 리셋시 복구할 오브젝트")]
+    [SerializeField] private DoorLock doorLock;
+
+    //=====런타임 상태값=====//
+    private float elapsedSeconds; //현재 루프 진행 시간
+    private float breakInSeconds; //1차침입 시점(루프 시작시 랜덤 결정)
+    private float emergencyKeySeconds; //2차침입 시점(배터리 제거시에만 결정)
+    
+    private int loopCount; //루프횟수
+    private bool isResetting; //리셋 중복 방지용 플래그
+
+    private bool batteryRemoved; //배터리 제거 여부(매 루프때마다 초기화할것)
+    private BreakInPhase breakInPhase; //침입 진행 단계 저장용
+
+    //플레이어 컨트롤러 보관
+    private CharacterController characterController;
+
+    //=====외부 접근용 프로퍼티=====//
+    public float ElapsedSeconds { get { return elapsedSeconds; } }
+    public float BreakInSeconds { get { return breakInSeconds; } }
+    public float EmergencyKeySeconds { get { return emergencyKeySeconds; } }
+    public int LoopCount { get { return loopCount; } }
+    public bool BatteryRemoved { get { return batteryRemoved; } }
+    public BreakInPhase CurBreakInPhase  { get { return breakInPhase; } }
+
+    private void Awake()
+    {
+        //컨트롤러는 플레이어쪽의 컴포넌트 가져오고
+        characterController = playerTransform.GetComponent<CharacterController>();
+    }
+
+    private void Start()
+    {
+        //첫 루프 시작
+        StartNewLoop();
+    }
+
+    private void Update()
+    {
+        elapsedSeconds += Time.deltaTime;
+
+        //침입 타임라인 처리(단계 기반)
+        UpdateBreakInTimeLine();
+
+        //사망 트리거 들어갈곳(일단 테스트용)
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            ResetLoop("테스트 사망처리");
+        }
+    }
+
+    /// <summary>
+    /// 새 루프 시작 : 타이머/침입
+    /// </summary>
+    private void StartNewLoop()
+    {
+        loopCount += 1;
+        //시간 초기화
+        elapsedSeconds = 0.0f;
+        //1차 침입 시간 결정
+        breakInSeconds = Random.Range(breakInMinSeconds, breakInMaxSeconds);
+        //비상키 시간은 배터리 제거 시에만 설정
+        emergencyKeySeconds = -1.0f;
+        //매 루프마다 배터리 제거 상태 리셋
+        batteryRemoved = false;
+        //1차 침입 대기 상태로 시작
+        breakInPhase = BreakInPhase.FirstAttempt;
+
+        doorLock.RestoreBatteryState();
+        TeleportPlayerToStart();
+        OnLoopStart();
+    }
+
+    /// <summary>
+    /// 루프 리셋 후 루프이유표시, 즉시 새 루프 시작
+    /// </summary>
+    /// <param name="reason"></param>
+    public void ResetLoop(string reason)
+    {
+        if (isResetting) return;
+
+        StartCoroutine(LoopResetCo(reason));
+    }
+
+    /// <summary>
+    /// 루프 리셋 요청시 트리거 재진입/연속 호출 방지용 코루틴
+    /// </summary>
+    /// <param name="reason"></param>
+    /// <returns></returns>
+    private IEnumerator LoopResetCo(string reason)
+    {
+        isResetting = true;
+        Debug.Log("[LoopManager] 루프리셋 = " + reason);
+
+        //한프레임 쉬고
+        yield return null;
+
+        StartNewLoop();
+
+        //리셋 쿨타임 후 리셋 허용
+        yield return new WaitForSeconds(resetCoolTime);
+        isResetting = false;
+    }
+
+    /// <summary>
+    /// [연출 훅] 루프 시작 지점(나중에 카메라/사운드/텍스트 붙일 자리)
+    /// </summary>
+    private void OnLoopStart()
+    {
+        Debug.Log("[LoopManager] 루프 시작됨 현재루프 =" + loopCount + "침입시간 = " + breakInSeconds.ToString("F2")+"s");
+    }
+
+    /// <summary>
+    /// 트래블 슈팅 시도
+    /// 루프가 시작될때, 플레이어 위치가 변하지 않는 상황 간혹 발생
+    /// 캐릭터 컨트롤러와 충돌문제인가 싶어(이동이 중복되는 문제),
+    /// 위치변경시에는 컨트롤러 비활성화, 변경후에 다시 활성화
+    /// </summary>
+    private void TeleportPlayerToStart()
+    {
+        if (playerTransform == null || loopStartPoint == null)
+        {
+            Debug.Log("[LoopManager] 위치변경 실패! = 플레이어 위치값 or 루프시작지점 null!");
+            return;
+        }
+
+        Vector3 targetPos = loopStartPoint.position + (Vector3.up * spawnYOffset);
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+            Debug.Log("[LoopManager] 컨트롤러 비활성화");
+            playerTransform.position = targetPos;
+            playerTransform.rotation = loopStartPoint.rotation;
+            characterController.enabled = true;
+            Debug.Log("[LoopManager] 컨트롤러 활성화");
+        }
+        else
+        {
+            //컨트롤러 없으면 일반 텔레포트 처리
+            playerTransform.position = targetPos;
+            playerTransform.rotation = loopStartPoint.rotation;
+            Debug.Log("[LoopManager] 일반 텔레포트 처리 완료");
+        }
+    }
+
+    /// <summary>
+    /// 배터리 제거 여부 함수
+    /// DoorLock 에서 호출,
+    /// -루프 내의 행동이니까, StartNewLoop 시에 false로 초기화
+    /// </summary>
+    /// <param name="value"></param>
+    public void SetBatteryRemoved(bool value)
+    {
+        batteryRemoved = value;
+        Debug.Log("[LoopManager] 배터리 제거상태 = " + batteryRemoved);
+    }
+
+    /// <summary>
+    /// 침입 타임라인을 단계별로 처리
+    /// -1차 침입 시점 도달시
+    /// ->배터리 미제거 = 침입 성공(Done)
+    /// ->배터리 제거 = 침입 실패 -> 비상키 시간 설정 ->waitingEmergencyKey
+    /// -비상키 대기 상태에서 비상키 시점 도달 시 = 침입성공(Done)
+    /// </summary>
+    private void UpdateBreakInTimeLine()
+    {
+        if (breakInPhase == BreakInPhase.FirstAttempt)
+        {
+            if (elapsedSeconds >= breakInSeconds)
+            {
+                if (batteryRemoved)
+                {
+                    //1차 침입 실패-> 비상키 침입 시간으로 재설정
+                    float extraDelay = Random.Range(emergencyMinSeconds, emergencyMaxSeconds);
+                    emergencyKeySeconds = elapsedSeconds + extraDelay;
+                    //페이즈 변경
+                    breakInPhase = BreakInPhase.WaitingEmergencyKey;
+                    OnBreakInFailedByBattery();
+                }
+                else
+                {
+                    //1차 침입 성공 Done 페이즈로 변경
+                    breakInPhase = BreakInPhase.Done;
+                    OnBreakInSuccess(BreakInMethod.DoorLock);
+                }
+            }
+        }
+        else if (breakInPhase == BreakInPhase.WaitingEmergencyKey)
+        {
+            if (elapsedSeconds >= emergencyKeySeconds)
+            {
+                //비상키 침입 성공
+                breakInPhase = BreakInPhase.Done;
+                OnBreakInSuccess(BreakInMethod.EmergencyKey);
+            }
+        }
+    }
+
+    /// <summary>
+    /// [연출 훅] 배터리 제거로 인해 1차 침입이 실패했을때 호출
+    /// -추후 괴한의" 왜 안열려?" 음성 이나 텍스트, 문 흔들리는 연출 들어갈 곳
+    /// </summary>
+    private void OnBreakInFailedByBattery()
+    {
+        Debug.Log("[LoopManager] 1차침입실패(배터리제거됨).2차 침입시간 = " + emergencyKeySeconds.ToString("F2") + "s");
+    }
+
+    /// <summary>
+    /// [연출 훅] 침입 성공 시 호출
+    /// -추후 괴한 스폰/도어 오픈/조명 변화/대사 재생 붙일곳-여기가 옵저버패턴 쓰일곳
+    /// </summary>
+    /// <param name="method"></param>
+    private void OnBreakInSuccess(BreakInMethod method)
+    {
+        Debug.Log("[LoopManager] 침입 성공 기능메서드 = " + method + "발생시간 = " + elapsedSeconds.ToString("F2")+"s");
+    }
+}
