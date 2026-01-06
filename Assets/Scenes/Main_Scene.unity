@@ -803,7 +803,7 @@ GameObject:
   - component: {fileID: 336483628}
   m_Layer: 0
   m_Name: TEST_Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1296,6 +1296,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1632718385}
   - component: {fileID: 1632718384}
+  - component: {fileID: 1632718386}
   m_Layer: 0
   m_Name: Exit_Trigger
   m_TagString: Untagged
@@ -1334,11 +1335,24 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -16.35, y: 7.41, z: -9.84}
-  m_LocalScale: {x: 10, y: 15, z: 1}
+  m_LocalScale: {x: 10, y: 15, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1632718386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632718383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fd6a760a1823247bfad923102fc8c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loopManager: {fileID: 1896098353}
 --- !u!1 &1659673181
 GameObject:
   m_ObjectHideFlags: 0
@@ -1571,6 +1585,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1896098352}
+  - component: {fileID: 1896098353}
   m_Layer: 0
   m_Name: Loop_Manager
   m_TagString: Untagged
@@ -1587,7 +1602,54 @@ Transform:
   m_GameObject: {fileID: 1896098351}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.507938, y: 1.1311167, z: 2.5376174}
+  m_LocalPosition: {x: -10.507938, y: 2.31, z: 2.5376174}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1896098353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896098351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b27dd2cbbbae840ae4a71e4f18e605, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 336483627}
+  loopStartPoint: {fileID: 1909660272}
+  breakInMinSeconds: 16
+  breakInMaxSeconds: 20
+--- !u!1 &1909660271
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1909660272}
+  m_Layer: 0
+  m_Name: Loop_StartPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1909660272
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909660271}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.507938, y: 3.171, z: 5.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1745,3 +1807,4 @@ SceneRoots:
   - {fileID: 1632718385}
   - {fileID: 336483627}
   - {fileID: 1896098352}
+  - {fileID: 1909660272}
