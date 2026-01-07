@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using UnityEngine.AI;
 
 /// <summary>
 /// 게임의 핵심 시스템 (타이머/침입/리셋) 관리
@@ -32,10 +34,22 @@ public class LoopManager : MonoBehaviour
     }
 
     //=====이벤트(옵저버 패턴) 훅=====//
-    //추후 이벤트 액션으로 들어갈 부분//
+    //루프가 시작됐음을 외부에 알릴 이벤트(스폰제거/초기화 등)
+    public event Action<int> LoopStarted;
+
+    //침입이 성공했음을 외부에 알릴 이벤트(괴한 스폰 트리거쪽)
+    public event Action<BreakInMethod> BreakInSucceeded;
+
+    //침입이 지연됐음을 외부에 알릴 이벤트(괴한 스폰 전 트리거쪽)
+    public event Action<float> BreakInFailedByBattery;
+
+    //==============================//
 
     [Header("플레이어 참조")]
     [SerializeField] private Transform playerTransform;
+
+    [Header("플레이어 네비메쉬 참조")]
+    [SerializeField] private NavMeshAgent playerAgent;
 
     [Header("루프 시작 위치")]
     [SerializeField] private Transform loopStartPoint;
@@ -83,6 +97,8 @@ public class LoopManager : MonoBehaviour
     {
         //컨트롤러는 플레이어쪽의 컴포넌트 가져오고
         characterController = playerTransform.GetComponent<CharacterController>();
+        //네비메쉬도 자동연결,
+        playerAgent = playerTransform.GetComponent<NavMeshAgent>();
     }
 
     private void Start()
@@ -113,8 +129,8 @@ public class LoopManager : MonoBehaviour
         loopCount += 1;
         //시간 초기화
         elapsedSeconds = 0.0f;
-        //1차 침입 시간 결정
-        breakInSeconds = Random.Range(breakInMinSeconds, breakInMaxSeconds);
+        //1차 침입 시간 결정 // 유니티 시스템 추가하니까, 랜덤어느걸 써야겠는지 모르겠다고 해서 명시적으로 엔진쪽으로 확정
+        breakInSeconds = UnityEngine.Random.Range(breakInMinSeconds, breakInMaxSeconds);
         //비상키 시간은 배터리 제거 시에만 설정
         emergencyKeySeconds = -1.0f;
         //매 루프마다 배터리 제거 상태 리셋
@@ -125,6 +141,8 @@ public class LoopManager : MonoBehaviour
         doorLock.RestoreBatteryState();
         TeleportPlayerToStart();
         OnLoopStart();
+
+        LoopStarted?.Invoke(loopCount);
     }
 
     /// <summary>
@@ -181,23 +199,42 @@ public class LoopManager : MonoBehaviour
         }
 
         Vector3 targetPos = loopStartPoint.position + (Vector3.up * spawnYOffset);
+        Quaternion targetRot = loopStartPoint.rotation;
 
-        if (characterController != null)
+        //루프 리셋후- 네비메쉬가 마지막 목적지로 다시 자동 이동하는 문제
+        //->네비메쉬 이동 멈추고, 내장기능 warp사용
+        if (playerAgent != null && playerAgent.enabled)
+        {
+            playerAgent.isStopped = true;
+            playerAgent.ResetPath();
+            playerAgent.velocity = Vector3.zero;
+
+            //네비메쉬 워프로 안전하게 동기화
+            playerAgent.Warp(targetPos);
+            Debug.Log("[LoopManager] 네비메쉬 워프로 이동됨");
+
+            playerTransform.rotation = targetRot;
+
+            playerAgent.isStopped = false;
+            return;
+        }
+
+        //->캐릭터 컨트롤러 기반 텔레포트 처리
+        if (characterController != null && characterController.enabled)
         {
             characterController.enabled = false;
             Debug.Log("[LoopManager] 컨트롤러 비활성화");
             playerTransform.position = targetPos;
-            playerTransform.rotation = loopStartPoint.rotation;
+            playerTransform.rotation = targetRot;
             characterController.enabled = true;
             Debug.Log("[LoopManager] 컨트롤러 활성화");
+            return;
         }
-        else
-        {
-            //컨트롤러 없으면 일반 텔레포트 처리
-            playerTransform.position = targetPos;
-            playerTransform.rotation = loopStartPoint.rotation;
-            Debug.Log("[LoopManager] 일반 텔레포트 처리 완료");
-        }
+
+        //네비메쉬,컨트롤러 둘다 아니면 직접 이동
+        playerTransform.position = targetPos;
+        playerTransform.rotation = targetRot;
+        Debug.Log("[LoopManager] 일반 텔레포트 처리 완료");
     }
 
     /// <summary>
@@ -228,7 +265,7 @@ public class LoopManager : MonoBehaviour
                 if (batteryRemoved)
                 {
                     //1차 침입 실패-> 비상키 침입 시간으로 재설정
-                    float extraDelay = Random.Range(emergencyMinSeconds, emergencyMaxSeconds);
+                    float extraDelay = UnityEngine.Random.Range(emergencyMinSeconds, emergencyMaxSeconds);
                     emergencyKeySeconds = elapsedSeconds + extraDelay;
                     //페이즈 변경
                     breakInPhase = BreakInPhase.WaitingEmergencyKey;
@@ -260,6 +297,9 @@ public class LoopManager : MonoBehaviour
     private void OnBreakInFailedByBattery()
     {
         Debug.Log("[LoopManager] 1차침입실패(배터리제거됨).2차 침입시간 = " + emergencyKeySeconds.ToString("F2") + "s");
+        
+        //외부로 배터리제거로 인한 침입 지연 타이밍 알림
+        BreakInFailedByBattery?.Invoke(emergencyKeySeconds);
     }
 
     /// <summary>
@@ -270,5 +310,6 @@ public class LoopManager : MonoBehaviour
     private void OnBreakInSuccess(BreakInMethod method)
     {
         Debug.Log("[LoopManager] 침입 성공 기능메서드 = " + method + "발생시간 = " + elapsedSeconds.ToString("F2")+"s");
+        BreakInSucceeded?.Invoke(method);
     }
 }
