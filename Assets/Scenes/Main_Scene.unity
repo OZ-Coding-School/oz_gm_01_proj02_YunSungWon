@@ -1290,6 +1290,7 @@ GameObject:
   - component: {fileID: 336483628}
   - component: {fileID: 336483629}
   - component: {fileID: 336483630}
+  - component: {fileID: 336483631}
   m_Layer: 0
   m_Name: TEST_Player
   m_TagString: Player
@@ -1314,7 +1315,7 @@ CharacterController:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
@@ -1436,7 +1437,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 8
   m_Acceleration: 10
   avoidancePriority: 50
   m_AngularSpeed: 700
@@ -1462,6 +1463,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 229459608}
   rayDistance: 100
+--- !u!114 &336483631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336483622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45713ef3d27305a44b9623ac42f43400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startMode: 0
+  agent: {fileID: 336483629}
+  playerControl: {fileID: 0}
 --- !u!1 &385345570
 GameObject:
   m_ObjectHideFlags: 0
