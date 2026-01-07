@@ -16,6 +16,9 @@ public class EnemyDirector : MonoBehaviour
     [Header("루프매니저 참조")]
     [SerializeField] private LoopManager loopManager;
 
+    [Header("플레이어 스텔스 참조")]
+    [SerializeField] private PlayerStealth playerStealth;
+
     [Header("플레이어 트랜스폼")]
     [SerializeField] private Transform playerTransform;
 
@@ -24,6 +27,9 @@ public class EnemyDirector : MonoBehaviour
 
     [Header("스폰위치")]
     [SerializeField] private Transform enemySpawnPoint;
+
+    [Header("화장실 문 체크 포인트")]
+    [SerializeField] private Transform bathRoomDoorPoint;
 
     //현재 소환된 괴한 프리팹 저장용
     private GameObject curEnemy;
@@ -89,7 +95,10 @@ public class EnemyDirector : MonoBehaviour
     {
         curEnemy = Instantiate(enemyPrefab,enemySpawnPoint.position,enemySpawnPoint.rotation);
         EnemyControl enemyControl = curEnemy.GetComponent<EnemyControl>();
-        enemyControl.Initialize(playerTransform, loopManager);
+        enemyControl.Initialize(playerTransform, loopManager, playerStealth);
+
+        //도어 포인트 여기서 주입
+        enemyControl.SetBathRoomDoorPoint(bathRoomDoorPoint);
 
         if (method == LoopManager.BreakInMethod.DoorLock)
             enemyControl.SetEntranceText("내 집에서 나가!!");
