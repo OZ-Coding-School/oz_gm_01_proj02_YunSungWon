@@ -30,11 +30,11 @@ public class PlayerControl : MonoBehaviour
         //대각선 속도 보정
         if (input.sqrMagnitude > 1.0f) input.Normalize();
 
-        Vector3 velocity = input * this.moveSpeed;
+        Vector3 velocity = input * moveSpeed;
 
         //중력 설정 - 일단 약하게 (바닥 접지용)
         velocity.y = -5.0f;
 
-        this.characterController.Move(velocity * Time.deltaTime);
+        characterController.Move(velocity * Time.deltaTime);
     }
 }
