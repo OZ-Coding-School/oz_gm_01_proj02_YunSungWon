@@ -2279,7 +2279,7 @@ GameObject:
   - component: {fileID: 922819912}
   - component: {fileID: 922819913}
   m_Layer: 3
-  m_Name: ClickCollirder
+  m_Name: ClickCollirder(DoorLock)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
