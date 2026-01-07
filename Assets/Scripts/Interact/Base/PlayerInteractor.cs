@@ -30,6 +30,7 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Update()
     {
+        //디버그용,테스트용 - E키 상호작용은 라스트 페이즈 현관문에만 달것
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryInteract();
