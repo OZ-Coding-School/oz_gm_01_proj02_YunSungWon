@@ -32,6 +32,9 @@ public class EnemyDirector : MonoBehaviour, IResetTable
     [Header("화장실 문 체크 포인트")]
     [SerializeField] private Transform bathRoomDoorPoint;
 
+    [Header("화장실 문 컨트롤러")]
+    [SerializeField] private BathRoom_DoorControl bathRoomDoorControl;
+
     //현재 소환된 괴한 프리팹 저장용
     private GameObject curEnemy;
 
@@ -98,7 +101,7 @@ public class EnemyDirector : MonoBehaviour, IResetTable
     {
         curEnemy = Instantiate(enemyPrefab,enemySpawnPoint.position,enemySpawnPoint.rotation);
         EnemyControl enemyControl = curEnemy.GetComponent<EnemyControl>();
-        enemyControl.Initialize(playerTransform, loopManager, playerStealth);
+        enemyControl.Initialize(playerTransform, loopManager, playerStealth, bathRoomDoorControl);
 
         //도어 포인트 여기서 주입
         enemyControl.SetBathRoomDoorPoint(bathRoomDoorPoint);

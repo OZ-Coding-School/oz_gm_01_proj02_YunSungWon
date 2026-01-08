@@ -5416,6 +5416,7 @@ MonoBehaviour:
     type: 3}
   enemySpawnPoint: {fileID: 1297157134}
   bathRoomDoorPoint: {fileID: 1384295556}
+  bathRoomDoorControl: {fileID: 2117373492}
 --- !u!1 &1909660271
 GameObject:
   m_ObjectHideFlags: 0
