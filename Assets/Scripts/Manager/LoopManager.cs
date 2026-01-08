@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// 게임의 핵심 시스템 (타이머/침입/리셋) 관리
@@ -16,8 +17,14 @@ using UnityEngine.AI;
 /// -상태관리관련 간단한 플래그 전환
 /// -이벤트 연출 포인트
 /// </summary>
+[DefaultExecutionOrder(-1000)] //루프매니저를 가장 먼저 실행, 상호작용 오브젝트가 먼저 초기화되었던 문제
 public class LoopManager : MonoBehaviour
 {
+    //ResetTable들이 각자의 OnEnable에서 등록할 수 있는 인스턴스 제공
+    public static LoopManager Instance { get; private set; }
+    //루프 리셋 대상 목록
+    private readonly List<IResetTable> resetTables = new List<IResetTable>();
+
     //침입성공의 방식을 구분하기위한 enum
     public enum BreakInMethod
     {
@@ -42,7 +49,6 @@ public class LoopManager : MonoBehaviour
 
     //침입이 지연됐음을 외부에 알릴 이벤트(괴한 스폰 전 트리거쪽)
     public event Action<float> BreakInFailedByBattery;
-
     //==============================//
 
     [Header("플레이어 참조")]
@@ -68,8 +74,7 @@ public class LoopManager : MonoBehaviour
     [Header("루프리셋 중복 방지(쿨타임)")]
     [SerializeField] private float resetCoolTime = 0.5f;
 
-    [Header("루프 리셋시 복구할 오브젝트")]
-    [SerializeField] private DoorLock doorLock;
+    //도어락은 이제 리셋 테이블로 복구하게 만들거야-기존 도어락 필드 제거
 
     //=====런타임 상태값=====//
     private float elapsedSeconds; //현재 루프 진행 시간
@@ -95,6 +100,14 @@ public class LoopManager : MonoBehaviour
 
     private void Awake()
     {
+        //====Instance세팅=====//일단 간단싱글톤으로,
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         //컨트롤러는 플레이어쪽의 컴포넌트 가져오고
         characterController = playerTransform.GetComponent<CharacterController>();
         //네비메쉬도 자동연결,
@@ -121,6 +134,56 @@ public class LoopManager : MonoBehaviour
         }
     }
 
+    #region 리셋테이블 관리
+    //=================================================================리셋테이블 관리=====//
+
+    /// <summary>
+    /// [등록]-ResetTable 컴포넌트가 OnEnable 에서 호출
+    /// </summary>
+    /// <param name="resetTable"></param>
+    public void RegisterResetTable(IResetTable resetTable)
+    {
+        if (resetTable == null) return;
+        //중복 등록 방지
+        if (resetTables.Contains(resetTable)) return;
+
+        resetTables.Add(resetTable);
+        Debug.Log("[LoopManager] ResetTable 등록됨, 현재 등록 개수 = " + resetTables.Count);
+    }
+
+    /// <summary>
+    /// [해제]-ResetTable 컴포넌트가 OnDisable 에서 호출
+    /// </summary>
+    /// <param name="resetTable"></param>
+    public void UnRegisterResetTable(IResetTable resetTable)
+    {
+        if (resetTable == null) return;
+
+        if (resetTables.Remove(resetTable))
+        {
+            Debug.Log("[LoopManager] ResetTable 해제됨, 현재 등록 개수 = " + resetTables.Count);
+        }
+    }
+
+    /// <summary>
+    /// [루프 시작시 호출]-등록된 resetTables들의 ResetState를 순회 호출
+    /// </summary>
+    private void ResetAllResetTables()
+    {
+        int i = 0;
+        while (i < resetTables.Count)
+        {
+            IResetTable resetTable = resetTables[i];
+            if (resetTable != null) resetTable.ResetState();
+            i++;
+        }
+    }
+
+    //=================================================================//
+    #endregion
+
+    #region 루프컨트롤
+    //======================================================================루프 컨트롤=====//
     /// <summary>
     /// 새 루프 시작 : 타이머/침입
     /// </summary>
@@ -138,7 +201,9 @@ public class LoopManager : MonoBehaviour
         //1차 침입 대기 상태로 시작
         breakInPhase = BreakInPhase.FirstAttempt;
 
-        doorLock.RestoreBatteryState();
+        //doorLock.RestoreBatteryState(); //변경 및 제거 예정
+
+        ResetAllResetTables();
         TeleportPlayerToStart();
         OnLoopStart();
 
@@ -147,6 +212,7 @@ public class LoopManager : MonoBehaviour
 
     /// <summary>
     /// 루프 리셋 후 루프이유표시, 즉시 새 루프 시작
+    /// 외부에서 루프 리셋 요청할때 호출
     /// </summary>
     /// <param name="reason"></param>
     public void ResetLoop(string reason)
@@ -175,14 +241,103 @@ public class LoopManager : MonoBehaviour
         yield return new WaitForSeconds(resetCoolTime);
         isResetting = false;
     }
+    //=================================================================//
+    #endregion
 
+    #region 침입 타임라인
+    //======================================================================침입 타임라인=====//
+    /// <summary>
+    /// 배터리 제거 여부 함수
+    /// DoorLock 에서 호출,
+    /// -루프 내의 행동이니까, StartNewLoop 시에 false로 초기화
+    /// </summary>
+    /// <param name="value"></param>
+    public void SetBatteryRemoved(bool value)
+    {
+        batteryRemoved = value;
+        Debug.Log("[LoopManager] 배터리 제거상태 = " + batteryRemoved);
+    }
+
+    /// <summary>
+    /// 침입 타임라인을 단계별로 처리
+    /// -1차 침입 시점 도달시
+    /// ->배터리 미제거 = 침입 성공(Done)
+    /// ->배터리 제거 = 침입 실패 -> 비상키 시간 설정 ->waitingEmergencyKey
+    /// -비상키 대기 상태에서 비상키 시점 도달 시 = 침입성공(Done)
+    /// </summary>
+    private void UpdateBreakInTimeLine()
+    {
+        if (breakInPhase == BreakInPhase.FirstAttempt)
+        {
+            if (elapsedSeconds >= breakInSeconds)
+            {
+                if (batteryRemoved)
+                {
+                    //1차 침입 실패-> 비상키 침입 시간으로 재설정
+                    float extraDelay = UnityEngine.Random.Range(emergencyMinSeconds, emergencyMaxSeconds);
+                    emergencyKeySeconds = elapsedSeconds + extraDelay;
+                    //페이즈 변경
+                    breakInPhase = BreakInPhase.WaitingEmergencyKey;
+                    OnBreakInFailedByBattery();
+                }
+                else
+                {
+                    //1차 침입 성공 Done 페이즈로 변경
+                    breakInPhase = BreakInPhase.Done;
+                    OnBreakInSuccess(BreakInMethod.DoorLock);
+                }
+            }
+        }
+        else if (breakInPhase == BreakInPhase.WaitingEmergencyKey)
+        {
+            if (elapsedSeconds >= emergencyKeySeconds)
+            {
+                //비상키 침입 성공
+                breakInPhase = BreakInPhase.Done;
+                OnBreakInSuccess(BreakInMethod.EmergencyKey);
+            }
+        }
+    }
+    //=================================================================//
+    #endregion
+
+    #region 연출 훅 부분
+    //======================================================================연출 훅 부분=====//
     /// <summary>
     /// [연출 훅] 루프 시작 지점(나중에 카메라/사운드/텍스트 붙일 자리)
     /// </summary>
     private void OnLoopStart()
     {
-        Debug.Log("[LoopManager] 루프 시작됨 현재루프 =" + loopCount + "침입시간 = " + breakInSeconds.ToString("F2")+"s");
+        Debug.Log("[LoopManager] 루프 시작됨 현재루프 =" + loopCount + "침입시간 = " + breakInSeconds.ToString("F2") + "s");
     }
+
+    /// <summary>
+    /// [연출 훅] 배터리 제거로 인해 1차 침입이 실패했을때 호출
+    /// -추후 괴한의" 왜 안열려?" 음성 이나 텍스트, 문 흔들리는 연출 들어갈 곳
+    /// </summary>
+    private void OnBreakInFailedByBattery()
+    {
+        Debug.Log("[LoopManager] 1차침입실패(배터리제거됨).2차 침입시간 = " + emergencyKeySeconds.ToString("F2") + "s");
+
+        //외부로 배터리제거로 인한 침입 지연 타이밍 알림
+        BreakInFailedByBattery?.Invoke(emergencyKeySeconds); //관련 제거 예정
+    }
+
+    /// <summary>
+    /// [연출 훅] 침입 성공 시 호출
+    /// -추후 괴한 스폰/도어 오픈/조명 변화/대사 재생 붙일곳-여기가 옵저버패턴 쓰일곳
+    /// </summary>
+    /// <param name="method"></param>
+    private void OnBreakInSuccess(BreakInMethod method)
+    {
+        Debug.Log("[LoopManager] 침입 성공 기능메서드 = " + method + "발생시간 = " + elapsedSeconds.ToString("F2") + "s");
+        BreakInSucceeded?.Invoke(method);
+    }
+    //=================================================================//
+    #endregion
+
+    #region 텔레포트 관련
+    //======================================================================텔레포트 관련=====//
 
     /// <summary>
     /// 트래블 슈팅 시도
@@ -236,80 +391,6 @@ public class LoopManager : MonoBehaviour
         playerTransform.rotation = targetRot;
         Debug.Log("[LoopManager] 일반 텔레포트 처리 완료");
     }
-
-    /// <summary>
-    /// 배터리 제거 여부 함수
-    /// DoorLock 에서 호출,
-    /// -루프 내의 행동이니까, StartNewLoop 시에 false로 초기화
-    /// </summary>
-    /// <param name="value"></param>
-    public void SetBatteryRemoved(bool value)
-    {
-        batteryRemoved = value;
-        Debug.Log("[LoopManager] 배터리 제거상태 = " + batteryRemoved);
-    }
-
-    /// <summary>
-    /// 침입 타임라인을 단계별로 처리
-    /// -1차 침입 시점 도달시
-    /// ->배터리 미제거 = 침입 성공(Done)
-    /// ->배터리 제거 = 침입 실패 -> 비상키 시간 설정 ->waitingEmergencyKey
-    /// -비상키 대기 상태에서 비상키 시점 도달 시 = 침입성공(Done)
-    /// </summary>
-    private void UpdateBreakInTimeLine()
-    {
-        if (breakInPhase == BreakInPhase.FirstAttempt)
-        {
-            if (elapsedSeconds >= breakInSeconds)
-            {
-                if (batteryRemoved)
-                {
-                    //1차 침입 실패-> 비상키 침입 시간으로 재설정
-                    float extraDelay = UnityEngine.Random.Range(emergencyMinSeconds, emergencyMaxSeconds);
-                    emergencyKeySeconds = elapsedSeconds + extraDelay;
-                    //페이즈 변경
-                    breakInPhase = BreakInPhase.WaitingEmergencyKey;
-                    OnBreakInFailedByBattery();
-                }
-                else
-                {
-                    //1차 침입 성공 Done 페이즈로 변경
-                    breakInPhase = BreakInPhase.Done;
-                    OnBreakInSuccess(BreakInMethod.DoorLock);
-                }
-            }
-        }
-        else if (breakInPhase == BreakInPhase.WaitingEmergencyKey)
-        {
-            if (elapsedSeconds >= emergencyKeySeconds)
-            {
-                //비상키 침입 성공
-                breakInPhase = BreakInPhase.Done;
-                OnBreakInSuccess(BreakInMethod.EmergencyKey);
-            }
-        }
-    }
-
-    /// <summary>
-    /// [연출 훅] 배터리 제거로 인해 1차 침입이 실패했을때 호출
-    /// -추후 괴한의" 왜 안열려?" 음성 이나 텍스트, 문 흔들리는 연출 들어갈 곳
-    /// </summary>
-    private void OnBreakInFailedByBattery()
-    {
-        Debug.Log("[LoopManager] 1차침입실패(배터리제거됨).2차 침입시간 = " + emergencyKeySeconds.ToString("F2") + "s");
-        
-        //외부로 배터리제거로 인한 침입 지연 타이밍 알림
-        BreakInFailedByBattery?.Invoke(emergencyKeySeconds);
-    }
-
-    /// <summary>
-    /// [연출 훅] 침입 성공 시 호출
-    /// -추후 괴한 스폰/도어 오픈/조명 변화/대사 재생 붙일곳-여기가 옵저버패턴 쓰일곳
-    /// </summary>
-    /// <param name="method"></param>
-    private void OnBreakInSuccess(BreakInMethod method)
-    {
-        Debug.Log("[LoopManager] 침입 성공 기능메서드 = " + method + "발생시간 = " + elapsedSeconds.ToString("F2")+"s");
-        BreakInSucceeded?.Invoke(method);
-    }
+    //=================================================================//
+    #endregion
 }

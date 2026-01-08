@@ -10,9 +10,10 @@ using UnityEngine;
 /// 
 /// [디자인/패턴]
 /// -InteractableBase 상속: 상호작용 방식 통일
-/// -LoopManager 참조를 통한 상태 전달(지금은 임시로 단순 플래그만 전달)
+/// -IResetTable 구현해서 루프 시작시 자동 복구되게
+/// -루프매니저에서 ResetAllResetTables() 호출하면, 해당 컴포넌트의 ResetState 실행
 /// </summary>
-public class DoorLock : InteractableBase
+public class DoorLock : InteractableBase, IResetTable
 {
     [Header("루프 매니저 참조")]
     [SerializeField] private LoopManager loopManager;
@@ -21,6 +22,16 @@ public class DoorLock : InteractableBase
     [SerializeField] private GameObject batteryVisual;
 
     private bool isRemoved;
+
+    private void OnEnable()
+    {
+        if (LoopManager.Instance != null) LoopManager.Instance.RegisterResetTable(this);
+    }
+
+    private void OnDisable()
+    {
+        if (LoopManager.Instance != null) LoopManager.Instance.UnRegisterResetTable(this);
+    }
 
     /// <summary>
     /// 배터리 상호작용 처리
@@ -43,6 +54,16 @@ public class DoorLock : InteractableBase
         batteryVisual.SetActive(false);
 
         Debug.Log("[배터리] 제거 완료");
+    }
+
+    /// <summary>
+    /// IResetTable 구현
+    /// 루프 시작시 배터리 상태 원상복구
+    /// </summary>
+    public void ResetState()
+    {
+        RestoreBatteryState();
+        Debug.Log("[DoorLock] ResetState: 배터리 상태 초기화");
     }
 
     /// <summary>
