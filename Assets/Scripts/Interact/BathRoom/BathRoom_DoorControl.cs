@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,11 @@ using UnityEngine;
 /// 
 /// [루프 리셋 연동]
 /// -IResetTable로 등록, 루프 시작시 문 상태 초기화 할것
+/// 
+/// +괴한 컨트롤 API 추가
+/// 괴한이 문을 열거나 잠금을 해제/파괴 할 수 있는 API 제공
+/// 추후 연출 이벤트로 연결할 수 있도록 DoorStateChanged 이벤트 제공
+/// 
 /// </summary>
 public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 {
@@ -33,6 +39,10 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
     [Header("현재 문 상태")]
     [SerializeField] private BathDoorState doorState = BathDoorState.Closed;
+
+    //문 상태 변경 이벤트(연출 훅)
+    //연출 생기면 여기에 구독해서 처리
+    public event Action<BathDoorState, BathDoorState, string> DoorStateChanged;
 
     //외부 접근용 프로퍼티
     public BathDoorState CurState { get { return doorState; } }
@@ -49,10 +59,11 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
     public void ResetState()
     {
-        doorState = BathDoorState.Closed;
-        Debug.Log("[BathRoom_DoorControl] ResetState: 문상태 초기화");
+        SetState(BathDoorState.Closed, "리셋상태: 문상태 = Closed");
     }
 
+    #region 플레이어 상호작용
+    //=================================================================플레이어 상호작용=====//
     /// <summary>
     /// [문 자체 클릭] 열기/닫기 토글
     /// Locked 상태에선 열리지 않게
@@ -119,28 +130,55 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
             return;
         }
     }
+    //=================================================================//
+    #endregion
+
+    #region 괴한 화장실문 컨트롤
+    //=================================================================괴한 화장실문 컨트롤=====//
+    /// <summary>
+    /// 괴한이 문을 여는 시도
+    /// -Closed면 Open으로 변경
+    /// -Open/Broken 이면 바로 true
+    /// -Locked면 fasle
+    /// </summary>
+    public bool EnemyTryOpenDoor()
+    {
+        if (doorState == BathDoorState.Open) return true;
+        if (doorState == BathDoorState.Broken) return true;
+
+        if (doorState == BathDoorState.Closed)
+        {
+            SetState(BathDoorState.Open, "괴한이 문을 : Close->Open");
+            return true;
+        }
+
+        return false;
+    }
 
     /// <summary>
-    /// 괴한 시점에서 현재 문을 즉시 통과 가능한지 검증
-    /// 잠겨있을 경우에만 지연, 문이 단순 닫혀있는 경우, 열고 들어오는 연출로 처리,
+    /// 괴한이 문을 잠금 해제하는 시도
+    /// -Locked면 Closed로 변경(잠금해제 기준)
+    /// -그 외는 false
     /// </summary>
-    public bool CanEnemyEnter()
+    public bool EnemyTryUnlock()
     {
-        if (doorState == BathDoorState.Locked) return false;
+        if (doorState != BathDoorState.Locked) return false;
+
+        SetState(BathDoorState.Closed, "괴한이 문을 : Locked->Closed(Unlock)");
         return true;
     }
 
     /// <summary>
-    /// 괴한이 잠금 해제 시도/파괴 마친 후 호출
-    /// -Locked 상태면 Broken으로 전환
+    /// 괴한이 문을 부숴서 강제개방(라스트 페이즈용)
+    /// -문이 어떤 상태든 Broken으로 바꿔버리기
     /// </summary>
-    public void ForceOpenByEnemy()
+    public void EnemyForceBreak()
     {
-        if (doorState == BathDoorState.Locked)
-        {
-            SetState(BathDoorState.Broken, "괴한 강제 개방 : Locked -> Broken");
-        }
+        if (doorState == BathDoorState.Broken) return;
+        SetState(BathDoorState.Broken, "괴한이 문을 부숴버림");
     }
+    //=================================================================//
+    #endregion
 
     /// <summary>
     /// 상태 변경 공통 처리
@@ -149,7 +187,9 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     /// <param name="reason"></param>
     private void SetState(BathDoorState newState, string reason)
     {
+        BathDoorState oldState = doorState;
         doorState = newState;
-        Debug.Log("[BathRoomDoor] 상태변경 : " + reason + "/현재 = " + doorState);
+        Debug.Log("[BathRoomDoor] 상태변경 : " + reason + "/" + oldState + "->" + newState);
+        DoorStateChanged?.Invoke(oldState, doorState, reason);
     }
 }

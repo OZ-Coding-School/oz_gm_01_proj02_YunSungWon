@@ -20,6 +20,12 @@ using UnityEngine.AI;
 /// -간단 상태 머신 구조로 책임 명확히 분리할것
 /// -추후 애니메이션/공격/탐색 로직(화장실/라스트페이즈) 등 상태 확장을 염두할 것
 /// 
+/// +추가 화장실 체크시, 문상태에 따라 행동 분기
+/// -문이 Open/Broken -바로 진입
+/// -문이 Closed - 문을 열고 진입
+/// -문이 Locked - 잠금해제 시도 후, 열고 진입
+/// (추후 연출은 DoorStateChanged/ 여기 코루틴의 훅에 붙이면 될듯)
+/// 
 /// </summary>
 public class EnemyControl : MonoBehaviour
 {
@@ -28,8 +34,8 @@ public class EnemyControl : MonoBehaviour
         None = 0,
         Entrance = 1,
         Chasing = 2,
-        CheckingBathRoom =3,
-        BreakingBathRoom =4
+        CheckingBathRoom = 3,
+        BreakingBathRoom = 4
     }
 
     [Header("추격대상-플레이어")]
@@ -37,6 +43,9 @@ public class EnemyControl : MonoBehaviour
 
     [Header("플레이어 은신상태")]
     [SerializeField] private PlayerStealth playerStealth;
+
+    [Header("화장실 문 컨트롤러 참조(문 상태에 따른 괴한 조작위함)")]
+    [SerializeField] private BathRoom_DoorControl bathRoomDoor;
 
     [Header("네비메쉬 참조")]
     [SerializeField] private NavMeshAgent agent;
@@ -59,8 +68,11 @@ public class EnemyControl : MonoBehaviour
     [Header("화장실 문 여는 시도 시간 설정")]
     [SerializeField] private float bathRoomTryOpenTime = 5.0f;
 
-    [Header("화장실 문 부수기까지 걸리는 시간 설정")]
-    [SerializeField] private float bathRoomBreakDelay = 10.0f;
+    [Header("화장실 문 잠금해제까지 걸리는 시간 설정")]
+    [SerializeField] private float bathRoomUnlockTime = 10.0f;
+
+    [Header("문이 열렸을때 연출 대기 시간")]
+    [SerializeField] private float bathDoorOpenTime = 2.0f;
 
     [Header("임시 테스트용 : 근접 시 플레이어 킬 처리")]
     [SerializeField] private bool enableKillTest = true;
@@ -93,11 +105,12 @@ public class EnemyControl : MonoBehaviour
     /// </summary>
     /// <param name="player"></param>
     /// <param name="manager"></param>
-    public void Initialize(Transform player, LoopManager manager, PlayerStealth stealth)
+    public void Initialize(Transform player, LoopManager manager, PlayerStealth stealth, BathRoom_DoorControl doorControl)
     {
         playertarget = player;
         loopManager = manager;
         playerStealth = stealth;
+        bathRoomDoor = doorControl;
     }
 
     /// <summary>
@@ -195,19 +208,71 @@ public class EnemyControl : MonoBehaviour
         //문 부수는 상태로 전환
         enemyState = EnemyState.BreakingBathRoom;
 
-        //문 여는 시도(여기에 연출 들어가야함)
-        Debug.Log("[EnemyControl]문앞> (문손잡이 흔듦) 무슨 소리가 들린거 같은데..");
-        yield return new WaitForSeconds(bathRoomTryOpenTime);
+        //문 상태 확인
+        if (bathRoomDoor == null)
+        {
+            Debug.Log("[EnemyControl] bathRoomDoor가 null, 문상태 확인 불가->진입으로 처리하겠음");
+            OnEnemyEnterBathRoom();
+            yield break;
+        }
+        BathRoom_DoorControl.BathDoorState state = bathRoomDoor.CurState;
+        Debug.Log("[EnemyControl] 현재 화장실 문 상태 = "+ state);
 
-        //여기서 플레이어 스텔스 상태 변환
-        playerStealth.SetHidden(false);
+        //========================================상태별 분기처리 구간=============================================//
+        if (state == BathRoom_DoorControl.BathDoorState.Open || state == BathRoom_DoorControl.BathDoorState.Broken)
+        {
+            //열려있는 상황->바로 진입
+            Debug.Log("[EnemyControl] 문이 이미 열려있음 ->진입으로 처리하겠음");
+            yield return new WaitForSeconds(0.5f);
+            OnEnemyEnterBathRoom();
+            yield break;
+        }
 
-        //일정 시간후 문 부수기(여기에 연출 들어가야함)
-        Debug.Log("[EnemyControl]문앞> (문손잡이 부숨) 왜 잠겨있지?");
-        yield return new WaitForSeconds(bathRoomBreakDelay);
+        if (state == BathRoom_DoorControl.BathDoorState.Closed)
+        {
+            //잠긴상태는 아님, 열고 진입
+            Debug.Log("[EnemyControl] 문이 닫혀있음 ->열고 진입으로 처리하겠음");
+            yield return new WaitForSeconds(bathRoomTryOpenTime);
 
-        //이후 발각되었다고 일단 가정-임시
-        Debug.Log("[EnemyControl]문앞> (문열림) 당신 누구야!?");
+            bool opened = bathRoomDoor.EnemyTryOpenDoor();
+            Debug.Log("[EnemyControl] 문 열기 시도 결과 = " +opened);
+
+            yield return new WaitForSeconds(bathDoorOpenTime);
+            OnEnemyEnterBathRoom();
+            yield break;
+        }
+
+        if (state == BathRoom_DoorControl.BathDoorState.Locked)
+        {
+            //잠금상태 -> 잠금해제 시도 후, 문열고, 진입
+            Debug.Log("[EnemyControl] 문이 잠겨있음 ->잠금해제 하고, 열고 진입으로 처리하겠음");
+            yield return new WaitForSeconds(bathRoomTryOpenTime);
+
+            Debug.Log("[EnemyControl] 잠금해제 시도중");
+            bool unlocked = bathRoomDoor.EnemyTryUnlock();
+            Debug.Log("[EnemyControl] 잠금해제 결과 = " + unlocked);
+
+            yield return new WaitForSeconds(bathRoomUnlockTime);
+
+            //잠금해제 후 문 열기
+            bool opened = bathRoomDoor.EnemyTryOpenDoor();
+            Debug.Log("[EnemyControl] 문 열기 시도 결과 = " + opened);
+
+            yield return new WaitForSeconds(bathDoorOpenTime);
+            OnEnemyEnterBathRoom();
+            yield break;
+        }
+        //===================================================================================//
+    }
+
+    /// <summary>
+    /// 괴한이 화장실에 진입했다고 가정처리(임시상태->은신해재+추격재개)
+    /// -문열림 애니메이션/카메라 뭐 플레이어 발견 연출을 여기 훅에 붙이면 됨
+    /// </summary>
+    private void OnEnemyEnterBathRoom()
+    {
+        if (playerStealth != null) playerStealth.SetHidden(false);
+        Debug.Log("[EnemyControl] 화장실 진입 완료. 플레이어 추격 재시작");
         StartChasing();
     }
 
