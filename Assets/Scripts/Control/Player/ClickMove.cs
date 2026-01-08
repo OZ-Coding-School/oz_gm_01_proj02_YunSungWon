@@ -73,7 +73,7 @@ public class ClickMove : MonoBehaviour
         if (hitGround)
         {
             ClearTarget();
-            MoveTO(hit.point);
+            MoveTo(hit.point);
         }
     }
 
@@ -82,7 +82,7 @@ public class ClickMove : MonoBehaviour
     {
         curTarget = target;
         Vector3 destination = target.InteractPoint.position;
-        MoveTO(destination);
+        MoveTo(destination);
 
         Debug.Log("[ClickMove] 타겟 지정됨,여기로 이동할게?" + target.name);
     }
@@ -91,7 +91,7 @@ public class ClickMove : MonoBehaviour
     /// 목적지로 이동기능만
     /// </summary>
     /// <param name="destination"></param>
-    private void MoveTO(Vector3 destination)
+    private void MoveTo(Vector3 destination)
     {
         agent.isStopped = false;
         agent.SetDestination(destination);
