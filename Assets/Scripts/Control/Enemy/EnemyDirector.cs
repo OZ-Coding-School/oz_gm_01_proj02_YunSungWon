@@ -10,8 +10,9 @@ using UnityEngine;
 /// -[디자인 패턴 활용]
 /// -여기서 드디어 옵저버 활용, 루프매니저의 이벤트 구독, 느슨한 결합위함
 /// -책임 분리(SRP)->루프매니저는 시간/상태, 여기 에너미디렉터는 연출/스폰만 담당
+/// -IResetTable : 루프 시작시 ResetState 로 일괄 초기화
 /// </summary>
-public class EnemyDirector : MonoBehaviour
+public class EnemyDirector : MonoBehaviour, IResetTable
 {
     [Header("루프매니저 참조")]
     [SerializeField] private LoopManager loopManager;
@@ -35,32 +36,34 @@ public class EnemyDirector : MonoBehaviour
     private GameObject curEnemy;
 
     /// <summary>
-    /// 이벤트 등록
+    /// 이벤트 등록 + 리셋 테이블 등록
     /// </summary>
     private void OnEnable()
     {
-        loopManager.LoopStarted += OnLoopStarted;
+        if(LoopManager.Instance != null) LoopManager.Instance.RegisterResetTable(this);
         loopManager.BreakInSucceeded += OnBreakInSucceeded;
         loopManager.BreakInFailedByBattery += OnBreakInFailedByBattery;
     }
 
     /// <summary>
-    /// 이벤트 해제
+    /// 이벤트 해제 + 리셋 테이블 해제
     /// </summary>
     private void OnDisable()
     {
-        loopManager.LoopStarted -= OnLoopStarted;
+        if (LoopManager.Instance != null) LoopManager.Instance.UnRegisterResetTable(this);
         loopManager.BreakInSucceeded -= OnBreakInSucceeded;
         loopManager.BreakInFailedByBattery -= OnBreakInFailedByBattery;
     }
 
     /// <summary>
-    /// 루프 시작되면 이전 루프의 괴한은 제거
+    /// IResetTable 구현
+    /// 루프 시작시 루프매니저가 ResetAllResetTables() 호출,
+    /// 여기선 이전 루프 괴한 제거를 수행 -리셋 경로 통일
     /// </summary>
-    /// <param name="loopCount"></param>
-    private void OnLoopStarted(int loopCount)
+    public void ResetState()
     {
         DeSpawnEnemy();
+        Debug.Log("[EnemyDirector] ResetState: 괴한 스폰상태 초기화");
     }
 
     /// <summary>
