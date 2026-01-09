@@ -25,6 +25,18 @@ using UnityEngine;
 /// 괴한이 문을 열거나 잠금을 해제/파괴 할 수 있는 API 제공
 /// 추후 연출 이벤트로 연결할 수 있도록 DoorStateChanged 이벤트 제공
 /// 
+/// 01/09(day4) 정리- 작업후 위 주석 지울것
+/// [역할 : 컨트롤 로직만 담당]
+/// 화장실 문 상태를 명확하게 enum으로 관리
+/// 
+/// -해당 클래스는 상태 정의/상태 전이 규칙만 담당할것
+/// -문이 실제로 어떻게 움직이게 보일지는 view쪽에서 담당
+/// 
+/// [사용된 것들]
+/// -상태기반 설계 : 물리 결과에 의존하지 않고, 게임규칙을 유지
+/// -SRP : 문 상태 로직과 시각 연출 분리
+/// -옵저버 : DoorStateChanged 이벤트로 연출/사운드/AI 느슨한 결합 가능(강결합 회피용)
+/// -IResetTable : 루프 리셋시 각 오브젝트 상태를 정확하게 복구하기 위함
 /// </summary>
 public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 {
@@ -36,12 +48,16 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         Locked =2,
         Broken =3
     }
-
+    //테스트용 임시 어트리뷰트 ==== 확인용
     [Header("현재 문 상태")]
     [SerializeField] private BathDoorState doorState = BathDoorState.Closed;
 
+    [Header("루프 리셋시 초기화 할 상태")]
+    [SerializeField] private BathDoorState resetState = BathDoorState.Closed;
+
     //문 상태 변경 이벤트(연출 훅)
     //연출 생기면 여기에 구독해서 처리
+    //<old->new 변화 방향, 변경된 이유>
     public event Action<BathDoorState, BathDoorState, string> DoorStateChanged;
 
     //외부 접근용 프로퍼티
@@ -59,7 +75,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
     public void ResetState()
     {
-        SetState(BathDoorState.Closed, "리셋상태: 문상태 = Closed");
+        SetState(resetState, "리셋상태: 문상태 = Closed");
     }
 
     #region 플레이어 상호작용
@@ -188,8 +204,17 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     private void SetState(BathDoorState newState, string reason)
     {
         BathDoorState oldState = doorState;
+
+        if (oldState == newState)
+        {
+            Debug.Log("[BathRoomDoor] 상태변경 무시 => 이미같은 상태임");
+            return;
+        }
+
         doorState = newState;
         Debug.Log("[BathRoomDoor] 상태변경 : " + reason + "/" + oldState + "->" + newState);
+        
+        //구독자에게 알림부분
         DoorStateChanged?.Invoke(oldState, doorState, reason);
     }
 }

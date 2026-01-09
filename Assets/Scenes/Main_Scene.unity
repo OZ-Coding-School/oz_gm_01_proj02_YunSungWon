@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStealth: {fileID: 336483633}
+  clickColliderOUT: {fileID: 1237767812}
 --- !u!54 &5049991
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1000,9 +1001,7 @@ Transform:
   m_Children:
   - {fileID: 1685685044}
   - {fileID: 1093555239}
-  - {fileID: 751770332}
   - {fileID: 1583539805}
-  - {fileID: 1237767813}
   m_Father: {fileID: 2117373491}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &193336970
@@ -2350,11 +2349,11 @@ Transform:
   m_GameObject: {fileID: 751770331}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.89, y: 10.31, z: 4.366849}
-  m_LocalScale: {x: 0.3, y: 1, z: 1}
+  m_LocalPosition: {x: -0.01, y: 0.00066668197, z: -0.009}
+  m_LocalScale: {x: 0.3, y: 0.06666667, z: 0.125}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 144531525}
+  m_Father: {fileID: 1585631915}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &751770333
 MonoBehaviour:
@@ -2390,7 +2389,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 15, z: 8}
+  m_Size: {x: 4, y: 15, z: 8}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &755626781
 GameObject:
@@ -3656,11 +3655,11 @@ Transform:
   m_GameObject: {fileID: 1237767812}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.91, y: 10.31, z: 4.366849}
-  m_LocalScale: {x: 0.3, y: 1, z: 1}
+  m_LocalPosition: {x: 0.5100002, y: 0.00066668197, z: -0.009}
+  m_LocalScale: {x: 0.4, y: 0.06666667, z: 0.125}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 144531525}
+  m_Father: {fileID: 1585631915}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1237767814
 MonoBehaviour:
@@ -4421,6 +4420,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 911070586}
+  - {fileID: 751770332}
+  - {fileID: 1237767813}
   m_Father: {fileID: 1685685044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1585631916
@@ -5403,6 +5404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStealth: {fileID: 336483633}
+  clickColliderOUT: {fileID: 1237767812}
 --- !u!54 &1887174683
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5913,6 +5915,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2117373491}
   - component: {fileID: 2117373492}
+  - component: {fileID: 2117373493}
   m_Layer: 0
   m_Name: TEST_BathRoom
   m_TagString: Untagged
@@ -5957,6 +5960,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorState: 1
+  resetState: 1
+--- !u!114 &2117373493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117373490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9915c9dd0a3b87488bfab3b8bffab3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorControl: {fileID: 2117373492}
+  doorHingePivot: {fileID: 1685685044}
+  closedYaw: 0
+  openYaw: -140
+  brokenYaw: -180
+  rotateDuration: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
