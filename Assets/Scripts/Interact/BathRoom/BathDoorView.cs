@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 /// <summary>
@@ -50,8 +49,18 @@ public class BathDoorView : MonoBehaviour
     /// <summary>
     /// 문 상태가 변경되면 호출되는 콜백
     /// </summary>
-    private void OnDoorStateChanged(BathRoom_DoorControl.BathDoorState oldState, BathRoom_DoorControl.BathDoorState newState, string reason)
+    private void OnDoorStateChanged(
+        BathRoom_DoorControl.BathDoorState oldState,
+        BathRoom_DoorControl.BathDoorState newState,
+        string reason,
+        BathRoom_DoorControl.BathDoorTransitionMode mode)
     {
+        if (mode == BathRoom_DoorControl.BathDoorTransitionMode.Instant)
+        {
+            ApplyVisualImmediate();
+            return;
+        }
+
         ApplyVisualByState(newState);
     }
 

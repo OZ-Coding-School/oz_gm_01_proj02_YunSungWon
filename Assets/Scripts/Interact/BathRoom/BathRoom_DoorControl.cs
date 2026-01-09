@@ -44,21 +44,26 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     public enum BathDoorState
     {
         Open = 0,
-        Closed =1,
-        Locked =2,
-        Broken =3
+        Closed = 1,
+        Locked = 2,
+        Broken = 3
     }
-    //테스트용 임시 어트리뷰트 ==== 확인용
+
+    //문 상태 전환 모드 정의(연출모드/리셋시 제외모드)
+    public enum BathDoorTransitionMode
+    {
+        Animated = 0,
+        Instant = 1
+    }
+
     [Header("현재 문 상태")]
     [SerializeField] private BathDoorState doorState = BathDoorState.Closed;
-
-    [Header("루프 리셋시 초기화 할 상태")]
-    [SerializeField] private BathDoorState resetState = BathDoorState.Closed;
 
     //문 상태 변경 이벤트(연출 훅)
     //연출 생기면 여기에 구독해서 처리
     //<old->new 변화 방향, 변경된 이유>
-    public event Action<BathDoorState, BathDoorState, string> DoorStateChanged;
+    //트랜지션모드가 인스턴트면(리셋용), 연출없이 즉시 회전값 고정
+    public event Action<BathDoorState, BathDoorState, string, BathDoorTransitionMode> DoorStateChanged;
 
     //외부 접근용 프로퍼티
     public BathDoorState CurState { get { return doorState; } }
@@ -75,7 +80,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
     public void ResetState()
     {
-        SetState(resetState, "리셋상태: 문상태 = Closed");
+        SetState(BathDoorState.Closed, "리셋상태: 문상태 = Closed", BathDoorTransitionMode.Instant);
     }
 
     #region 플레이어 상호작용
@@ -102,13 +107,13 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
         if (doorState == BathDoorState.Open)
         {
-            SetState(BathDoorState.Closed, "문 클릭 : Open->Closed");
+            SetState(BathDoorState.Closed, "문 클릭 : Open->Closed", BathDoorTransitionMode.Animated);
             return;
         }
 
         if (doorState == BathDoorState.Closed)
         {
-            SetState(BathDoorState.Open, "문 클릭 : Closed->Open");
+            SetState(BathDoorState.Open, "문 클릭 : Closed->Open", BathDoorTransitionMode.Animated);
             return;
         }
     }
@@ -136,13 +141,13 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
         if (doorState == BathDoorState.Closed)
         {
-            SetState(BathDoorState.Locked, "문고리 클릭 : Closed ->  Locked");
+            SetState(BathDoorState.Locked, "문고리 클릭 : Closed ->  Locked", BathDoorTransitionMode.Animated);
             return;
         }
 
         if (doorState == BathDoorState.Locked)
         {
-            SetState(BathDoorState.Closed, "문고리 클릭 : Locked -> Closed");
+            SetState(BathDoorState.Closed, "문고리 클릭 : Locked -> Closed", BathDoorTransitionMode.Animated);
             return;
         }
     }
@@ -164,7 +169,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
 
         if (doorState == BathDoorState.Closed)
         {
-            SetState(BathDoorState.Open, "괴한이 문을 : Close->Open");
+            SetState(BathDoorState.Open, "괴한이 문을 : Close->Open", BathDoorTransitionMode.Animated);
             return true;
         }
 
@@ -180,7 +185,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     {
         if (doorState != BathDoorState.Locked) return false;
 
-        SetState(BathDoorState.Closed, "괴한이 문을 : Locked->Closed(Unlock)");
+        SetState(BathDoorState.Closed, "괴한이 문을 : Locked->Closed(Unlock)", BathDoorTransitionMode.Animated);
         return true;
     }
 
@@ -191,7 +196,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     public void EnemyForceBreak()
     {
         if (doorState == BathDoorState.Broken) return;
-        SetState(BathDoorState.Broken, "괴한이 문을 부숴버림");
+        SetState(BathDoorState.Broken, "괴한이 문을 부숴버림", BathDoorTransitionMode.Animated);
     }
     //=================================================================//
     #endregion
@@ -201,7 +206,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     /// </summary>
     /// <param name="newState"></param>
     /// <param name="reason"></param>
-    private void SetState(BathDoorState newState, string reason)
+    private void SetState(BathDoorState newState, string reason,BathDoorTransitionMode mode)
     {
         BathDoorState oldState = doorState;
 
@@ -212,9 +217,9 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         }
 
         doorState = newState;
-        Debug.Log("[BathRoomDoor] 상태변경 : " + reason + "/" + oldState + "->" + newState);
+        Debug.Log("[BathRoomDoor] 상태변경 : " + reason + "/" + oldState + "->" + newState + "/트랜지션모드" + mode);
         
         //구독자에게 알림부분
-        DoorStateChanged?.Invoke(oldState, doorState, reason);
+        DoorStateChanged?.Invoke(oldState, doorState, reason, mode);
     }
 }
