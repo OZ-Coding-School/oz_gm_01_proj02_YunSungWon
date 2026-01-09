@@ -16,6 +16,9 @@ using UnityEngine;
 /// 루프 매니저의 이벤트를 받아 괴한 스폰/제거 를 수행하는 연출 감독역할
 /// 루프매니저(시간/상태)와 EnemyControl(행동)을 느슨하게 결합(옵저버)
 /// -에너미 프리팹이 씬 오브젝트를 직접 참조 못하는 문제를 해결-각 참조요소들 여기서 주입
+/// 
+/// --지금 유니티 라이프 사이클 관련, 참조 주입이 제대로 안되고 있음
+/// -주입이 되기도전에, 프리팹이 생성되어버려서, 문제
 /// </summary>
 public class EnemyDirector : MonoBehaviour
 {
@@ -111,12 +114,14 @@ public class EnemyDirector : MonoBehaviour
         }
 
         curEnemy = Instantiate(enemyPrefab,enemySpawnPoint.position,enemySpawnPoint.rotation);
+
         EnemyControl enemyControl = curEnemy.GetComponent<EnemyControl>();
         EnemyVisionSensor sensor = curEnemy.GetComponent<EnemyVisionSensor>();
 
+        //참조 주입 구간
         enemyControl.Initialize(playerTransform, loopManager, bathRoomDoorControl, sensor);
 
-        //도어 포인트 여기서 주입
+        //각 포인트 여기서 주입
         enemyControl.SetSearchPoints(bathRoomDoorPoint, kitchenKeySearchPoint, sofaWatchPoint, kitchenEntryPoint);
 
         if (method == LoopManager.BreakInMethod.DoorLock)

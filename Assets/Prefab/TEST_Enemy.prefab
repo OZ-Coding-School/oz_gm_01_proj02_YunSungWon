@@ -266,7 +266,7 @@ MonoBehaviour:
   waitInBathDuration: 30
   sofaWatchDuration: 10
   kitchenWatchDuration: 10
-  chaseUpdateInterval: 0.1
+  chaseUpdateInterval: 0.3
   chaseLostReturnTime: 1
   enableKillTest: 1
   killDistance: 2.5
@@ -283,11 +283,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyeBall: {fileID: 5593039161174940544}
-  viewDistance: 27
+  viewDistance: 20
   viewAngle: 110
   obstructionMask:
     serializedVersion: 2
     m_Bits: 128
-  checkInterval: 0.1
+  checkInterval: 0.5
   playerAimHeight: 1
   drawGizmo: 1

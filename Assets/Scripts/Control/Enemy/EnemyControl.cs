@@ -70,10 +70,9 @@ public class EnemyControl : MonoBehaviour
     [SerializeField] private BathRoom_DoorControl bathRoomDoor;
     [Header("괴한 시야 담당 센서")]
     [SerializeField] private EnemyVisionSensor visionSensor;
-    //==============================================================//
-
     [Header("네비메쉬 참조")]
     [SerializeField] private NavMeshAgent agent;
+    //==============================================================//
 
     //===========괴한 탐색 포인트===========//
     [Header("화장실 앞")]
@@ -134,6 +133,7 @@ public class EnemyControl : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        visionSensor = GetComponent<EnemyVisionSensor>();
     }
 
     private void OnEnable()
