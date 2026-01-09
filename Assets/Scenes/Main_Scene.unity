@@ -5960,7 +5960,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorState: 1
-  resetState: 1
 --- !u!114 &2117373493
 MonoBehaviour:
   m_ObjectHideFlags: 0
