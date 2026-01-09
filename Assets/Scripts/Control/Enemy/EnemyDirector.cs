@@ -11,14 +11,16 @@ using UnityEngine;
 /// -여기서 드디어 옵저버 활용, 루프매니저의 이벤트 구독, 느슨한 결합위함
 /// -책임 분리(SRP)->루프매니저는 시간/상태, 여기 에너미디렉터는 연출/스폰만 담당
 /// -IResetTable : 루프 시작시 ResetState 로 일괄 초기화
+/// 
+/// --정리--
+/// 루프 매니저의 이벤트를 받아 괴한 스폰/제거 를 수행하는 연출 감독역할
+/// 루프매니저(시간/상태)와 EnemyControl(행동)을 느슨하게 결합(옵저버)
+/// -에너미 프리팹이 씬 오브젝트를 직접 참조 못하는 문제를 해결-각 참조요소들 여기서 주입
 /// </summary>
-public class EnemyDirector : MonoBehaviour, IResetTable
+public class EnemyDirector : MonoBehaviour
 {
     [Header("루프매니저 참조")]
     [SerializeField] private LoopManager loopManager;
-
-    [Header("플레이어 스텔스 참조")]
-    [SerializeField] private PlayerStealth playerStealth;
 
     [Header("플레이어 트랜스폼")]
     [SerializeField] private Transform playerTransform;
@@ -35,6 +37,15 @@ public class EnemyDirector : MonoBehaviour, IResetTable
     [Header("화장실 문 컨트롤러")]
     [SerializeField] private BathRoom_DoorControl bathRoomDoorControl;
 
+    [Header("부엌 열쇠 탐색 포인트")]
+    [SerializeField] private Transform kitchenKeySearchPoint;
+
+    [Header("소파 감시 포인트")]
+    [SerializeField] private Transform sofaWatchPoint;
+
+    [Header("부엌 진입 포인트")]
+    [SerializeField] private Transform kitchenEntryPoint;
+
     //현재 소환된 괴한 프리팹 저장용
     private GameObject curEnemy;
 
@@ -43,7 +54,7 @@ public class EnemyDirector : MonoBehaviour, IResetTable
     /// </summary>
     private void OnEnable()
     {
-        if(LoopManager.Instance != null) LoopManager.Instance.RegisterResetTable(this);
+        loopManager.LoopStarted += OnLoopStarted;
         loopManager.BreakInSucceeded += OnBreakInSucceeded;
         loopManager.BreakInFailedByBattery += OnBreakInFailedByBattery;
     }
@@ -53,20 +64,14 @@ public class EnemyDirector : MonoBehaviour, IResetTable
     /// </summary>
     private void OnDisable()
     {
-        if (LoopManager.Instance != null) LoopManager.Instance.UnRegisterResetTable(this);
+        loopManager.LoopStarted -= OnLoopStarted;
         loopManager.BreakInSucceeded -= OnBreakInSucceeded;
         loopManager.BreakInFailedByBattery -= OnBreakInFailedByBattery;
     }
 
-    /// <summary>
-    /// IResetTable 구현
-    /// 루프 시작시 루프매니저가 ResetAllResetTables() 호출,
-    /// 여기선 이전 루프 괴한 제거를 수행 -리셋 경로 통일
-    /// </summary>
-    public void ResetState()
+    private void OnLoopStarted(int loopCount)
     {
         DeSpawnEnemy();
-        Debug.Log("[EnemyDirector] ResetState: 괴한 스폰상태 초기화");
     }
 
     /// <summary>
@@ -99,12 +104,20 @@ public class EnemyDirector : MonoBehaviour, IResetTable
     /// </summary>
     private void SpawnEnemy(LoopManager.BreakInMethod method)
     {
+        if (enemyPrefab == null || enemySpawnPoint == null)
+        {
+            Debug.Log("[EnemyDirector] enemyPrefab / enemySpawnPoint 둘중 null ");
+            return;
+        }
+
         curEnemy = Instantiate(enemyPrefab,enemySpawnPoint.position,enemySpawnPoint.rotation);
         EnemyControl enemyControl = curEnemy.GetComponent<EnemyControl>();
-        enemyControl.Initialize(playerTransform, loopManager, playerStealth, bathRoomDoorControl);
+        EnemyVisionSensor sensor = curEnemy.GetComponent<EnemyVisionSensor>();
+
+        enemyControl.Initialize(playerTransform, loopManager, bathRoomDoorControl, sensor);
 
         //도어 포인트 여기서 주입
-        enemyControl.SetBathRoomDoorPoint(bathRoomDoorPoint);
+        enemyControl.SetSearchPoints(bathRoomDoorPoint, kitchenKeySearchPoint, sofaWatchPoint, kitchenEntryPoint);
 
         if (method == LoopManager.BreakInMethod.DoorLock)
             enemyControl.SetEntranceText("내 집에서 나가!!");
@@ -112,7 +125,7 @@ public class EnemyDirector : MonoBehaviour, IResetTable
         { 
             enemyControl.SetEntranceText("비상키가 있어서 다행이지..\n 뭐야! 당신 누구야!"); 
         }
-        enemyControl.BeginEntranceChase();
+        enemyControl.BeginScenario();
     }
 
     /// <summary>
