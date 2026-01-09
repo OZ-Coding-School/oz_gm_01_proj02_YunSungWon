@@ -10,11 +10,15 @@ public class BathRoomHideZoneOut : MonoBehaviour
     [Header("스텔스 상태를 적용-playerStealth")]
     [SerializeField] private PlayerStealth playerStealth;
 
+    [Header("화장실 문-거실쪽 콜라이더 활성화")]
+    [SerializeField] private GameObject clickColliderOUT;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             if (playerStealth != null) playerStealth.SetHidden(false);
+            clickColliderOUT.SetActive(true);
         }
     }
 }
