@@ -613,14 +613,4 @@ public class EnemyControl : MonoBehaviour
     {
         entranceText = text;
     }
-
-    ///// <summary>
-    ///// 씬에 배치된 화장실 문 체크 포인트를 런타임에 주입
-    ///// 프리팹으로 만들어놔서 씬 오브젝트 직접 참조 불가 Director에서 전달해줄 것
-    ///// </summary>
-    ///// <param name="point"></param>
-    //public void SetBathRoomDoorPoint(Transform point)
-    //{
-    //    bathRoomDoorPoint = point;
-    //}
 }
