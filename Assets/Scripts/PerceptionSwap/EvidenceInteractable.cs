@@ -28,13 +28,25 @@ public class EvidenceInteractable : InteractableBase
 
     public override void Interact(GameObject interactor)
     {
+        if (string.IsNullOrWhiteSpace(evidenceId))
+        {
+            Debug.Log("[EvidenceInteractable] evidenceId가 null, 고유 id 지정필요");
+            return;
+        }
+
         if (perceptionManager == null)
         {
             perceptionManager = PerceptionManager.Instance;
         }
 
         bool applied = perceptionManager.RegisterEvience(evidenceId, meterGain, reason);
-        if (applied) Debug.Log("[EvidenceInteractable] 단서 반영 완료 : " + evidenceId);
-        else Debug.Log("[EvidenceInteractable] 단서 반영 실패(중복가능성 있음) : " + evidenceId);
+        if (applied)
+        {
+            Debug.Log("[EvidenceInteractable] 단서 반영 완료 : " + evidenceId);
+        }
+        else
+        {
+            Debug.Log("[EvidenceInteractable] 단서 반영 실패(중복가능성 있음) : " + evidenceId);
+        } 
     }
 }

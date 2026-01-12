@@ -725,7 +725,7 @@ Transform:
   - {fileID: 1564387768}
   - {fileID: 864879482}
   - {fileID: 690115038}
-  - {fileID: 1428852396}
+  - {fileID: 2006560860}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &78595519
@@ -3097,7 +3097,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -3204,7 +3204,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -4881,9 +4881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 864879482}
   - component: {fileID: 864879483}
-  - component: {fileID: 864879484}
-  - component: {fileID: 864879485}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: pill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4922,40 +4920,6 @@ MonoBehaviour:
   perceptionManager: {fileID: 2128203380}
   hallucinationVisual: {fileID: 505751896}
   realityVisual: {fileID: 490864032}
---- !u!114 &864879484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864879481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebd24e2c9304c024e9880885adb1777c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayName: "\uC57D"
-  perceptionManager: {fileID: 2128203380}
-  realityDuration: 30
-  oneUsePerLoop: 1
-  reason: "\uC57D \uBCF5\uC6A9"
---- !u!114 &864879485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864879481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 710bae37b0756f14eafd7ffeea5b0939, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayName: "\uC57D \uBCF5\uC6A9+\uD604\uC2E4\uC778\uC9C0\uC0C1\uD0DC \uB204\uC801_TEST"
-  perceptionManager: {fileID: 2128203380}
-  evidenceId: Pill_HInt
-  meterGain: 0.1
-  reason: "\uC57D\uC744 \uBCF5\uC6A9,\uBA38\uB9AC\uAC00 \uC5B4\uC9C0\uB7FD\uB2E4"
 --- !u!1 &868440478
 GameObject:
   m_ObjectHideFlags: 0
@@ -8204,95 +8168,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425481298}
   m_CullTransparentMesh: 1
---- !u!1 &1428852395
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1428852396}
-  - component: {fileID: 1428852398}
-  - component: {fileID: 1428852397}
-  - component: {fileID: 1428852399}
-  m_Layer: 3
-  m_Name: ClickCollider(Pill)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1428852396
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428852395}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.209503, y: 4.7996035, z: 19.694849}
-  m_LocalScale: {x: 1, y: 3, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 69777212}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1428852397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428852395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0ca0ebbb8635b469b995c77c62f3a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactable: {fileID: 864879484}
-  interactPoint: {fileID: 690115038}
-  interactDistance: 5
---- !u!136 &1428852398
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428852395}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1428852399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428852395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 710bae37b0756f14eafd7ffeea5b0939, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayName: "\uC57D\uBCF5\uC6A9+\uD604\uC2E4\uC778\uC9C0\uC0C1\uD0DC \uB204\uC801+TEST"
-  perceptionManager: {fileID: 2128203380}
-  evidenceId: Pill_Hint
-  meterGain: 0.1
-  reason: "\uC57D \uBCF5\uC6A9, \uBA38\uB9AC\uAC00 \uC5B4\uC9C0\uB7FD"
 --- !u!1 &1476942335
 GameObject:
   m_ObjectHideFlags: 0
@@ -11269,6 +11144,113 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003179702}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2006560859
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2006560860}
+  - component: {fileID: 2006560864}
+  - component: {fileID: 2006560863}
+  - component: {fileID: 2006560862}
+  - component: {fileID: 2006560861}
+  m_Layer: 3
+  m_Name: ClickCollider(Pill)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2006560860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006560859}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.2385025, y: 5.079603, z: 19.62485}
+  m_LocalScale: {x: 1.3, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 69777212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2006560861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006560859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0ca0ebbb8635b469b995c77c62f3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactable: {fileID: 0}
+  interactPoint: {fileID: 690115038}
+  interactDistance: 5
+--- !u!114 &2006560862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006560859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd24e2c9304c024e9880885adb1777c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayName: "\uC57D"
+  perceptionManager: {fileID: 2128203380}
+  realityDuration: 30
+  oneUsePerLoop: 1
+  reason: "\uC57D\uBCF5\uC6A9"
+--- !u!114 &2006560863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006560859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 710bae37b0756f14eafd7ffeea5b0939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayName: "\uC57D"
+  perceptionManager: {fileID: 2128203380}
+  evidenceId: Pill_Hint
+  meterGain: 0.2
+  reason: "\uC57D \uBCF5\uC6A9"
+--- !u!136 &2006560864
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006560859}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2022306322
 GameObject:
   m_ObjectHideFlags: 3
