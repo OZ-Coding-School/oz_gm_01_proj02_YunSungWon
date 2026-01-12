@@ -73,7 +73,7 @@ public class EnemyVisionSensor : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > checkInterval) return;
+        if (timer < checkInterval) return;
 
         timer = 0.0f;
         ThickVision();
