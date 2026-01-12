@@ -170,7 +170,7 @@ public class PerceptionManager : MonoBehaviour
         float roll = UnityEngine.Random.value;
         if (roll <= chance)
         {
-            EnterTempReality(randomRealityDuration, "랜덤 현실 방생(누적치 기반)");
+            EnterTempReality(randomRealityDuration, "랜덤 현실 발생(누적치 기반)");
         }
     }
 

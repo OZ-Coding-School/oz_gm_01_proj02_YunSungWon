@@ -724,6 +724,8 @@ Transform:
   - {fileID: 32405626}
   - {fileID: 1564387768}
   - {fileID: 864879482}
+  - {fileID: 690115038}
+  - {fileID: 1428852396}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &78595519
@@ -3056,7 +3058,7 @@ GameObject:
   - component: {fileID: 490864036}
   - component: {fileID: 490864035}
   - component: {fileID: 490864034}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RealPill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3121,7 +3123,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e6cad7089ba0a904ea33d8b84f97e7e9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3163,7 +3165,7 @@ GameObject:
   - component: {fileID: 505751900}
   - component: {fileID: 505751899}
   - component: {fileID: 505751898}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Halluconation_Pill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4013,6 +4015,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 619262631}
   m_CullTransparentMesh: 1
+--- !u!1 &690115037
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 690115038}
+  m_Layer: 0
+  m_Name: Pill_Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &690115038
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690115037}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.448503, y: 0.059603423, z: 19.58485}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1040335977}
+  m_Father: {fileID: 69777212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &696691581
 GameObject:
   m_ObjectHideFlags: 0
@@ -4847,6 +4881,8 @@ GameObject:
   m_Component:
   - component: {fileID: 864879482}
   - component: {fileID: 864879483}
+  - component: {fileID: 864879484}
+  - component: {fileID: 864879485}
   m_Layer: 0
   m_Name: pill
   m_TagString: Untagged
@@ -4886,6 +4922,40 @@ MonoBehaviour:
   perceptionManager: {fileID: 2128203380}
   hallucinationVisual: {fileID: 505751896}
   realityVisual: {fileID: 490864032}
+--- !u!114 &864879484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864879481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd24e2c9304c024e9880885adb1777c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayName: "\uC57D"
+  perceptionManager: {fileID: 2128203380}
+  realityDuration: 30
+  oneUsePerLoop: 1
+  reason: "\uC57D \uBCF5\uC6A9"
+--- !u!114 &864879485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864879481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 710bae37b0756f14eafd7ffeea5b0939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayName: "\uC57D \uBCF5\uC6A9+\uD604\uC2E4\uC778\uC9C0\uC0C1\uD0DC \uB204\uC801_TEST"
+  perceptionManager: {fileID: 2128203380}
+  evidenceId: Pill_HInt
+  meterGain: 0.1
+  reason: "\uC57D\uC744 \uBCF5\uC6A9,\uBA38\uB9AC\uAC00 \uC5B4\uC9C0\uB7FD\uB2E4"
 --- !u!1 &868440478
 GameObject:
   m_ObjectHideFlags: 0
@@ -5483,7 +5553,7 @@ GameObject:
   - component: {fileID: 922819912}
   - component: {fileID: 922819913}
   m_Layer: 3
-  m_Name: ClickCollirder(DoorLock)
+  m_Name: ClickCollider(DoorLock)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6138,6 +6208,111 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013234852}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1040335976
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1040335977}
+  - component: {fileID: 1040335980}
+  - component: {fileID: 1040335979}
+  - component: {fileID: 1040335978}
+  m_Layer: 0
+  m_Name: Temp_Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1040335977
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040335976}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 690115038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1040335978
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040335976}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1040335979
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040335976}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 64fc753207309e94d84db1478d7ccd3c, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1040335980
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040335976}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1086232080
 GameObject:
@@ -8029,6 +8204,95 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425481298}
   m_CullTransparentMesh: 1
+--- !u!1 &1428852395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1428852396}
+  - component: {fileID: 1428852398}
+  - component: {fileID: 1428852397}
+  - component: {fileID: 1428852399}
+  m_Layer: 3
+  m_Name: ClickCollider(Pill)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1428852396
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428852395}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 12.209503, y: 4.7996035, z: 19.694849}
+  m_LocalScale: {x: 1, y: 3, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 69777212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1428852397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428852395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0ca0ebbb8635b469b995c77c62f3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactable: {fileID: 864879484}
+  interactPoint: {fileID: 690115038}
+  interactDistance: 5
+--- !u!136 &1428852398
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428852395}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1428852399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428852395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 710bae37b0756f14eafd7ffeea5b0939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayName: "\uC57D\uBCF5\uC6A9+\uD604\uC2E4\uC778\uC9C0\uC0C1\uD0DC \uB204\uC801+TEST"
+  perceptionManager: {fileID: 2128203380}
+  evidenceId: Pill_Hint
+  meterGain: 0.1
+  reason: "\uC57D \uBCF5\uC6A9, \uBA38\uB9AC\uAC00 \uC5B4\uC9C0\uB7FD"
 --- !u!1 &1476942335
 GameObject:
   m_ObjectHideFlags: 0
@@ -11367,10 +11631,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialState: 0
   realityMeter: 0
-  randomCheckInterval: 1
-  baseRealityChance: 0.05
+  randomCheckInterval: 2
+  baseRealityChance: 0.02
   meterToChanceMultiplier: 0.1
-  randomRealityDuration: 7
+  randomRealityDuration: 0.5
   giveInstantGlimpseOnEvidence: 1
   evidenceGlimpseDuration: 2
 --- !u!4 &2128203381

@@ -11,15 +11,15 @@ using UnityEngine;
 /// PerceptionManager 이벤트 구독
 /// -현실인지 상태에서만 정상적인 신고 가능
 /// </summary>
-public class PhonePerceptionUI : MonoBehaviour
+public class PerceptionUI : MonoBehaviour
 {
     [Header("PerceptionManager 참조")]
     [SerializeField] private PerceptionManager perceptionManager;
 
-    [Header("환각상태 핸드폰UI 패널")]
+    [Header("환각상태 UI 패널")]
     [SerializeField] private GameObject hallucinationPanel;
 
-    [Header("현실상태 핸드폰UI 패널")]
+    [Header("현실상태 UI 패널")]
     [SerializeField] private GameObject realityPanel;
 
     public bool IsRealityReadable { get { return perceptionManager.CurState == PerceptionManager.PerceptionState.Reality; } }
