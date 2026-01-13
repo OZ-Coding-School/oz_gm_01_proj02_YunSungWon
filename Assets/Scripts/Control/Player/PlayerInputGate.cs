@@ -21,8 +21,8 @@ public class PlayerInputGate : MonoBehaviour
     [Header("PlayerInteractor 컴포넌트")]
     [SerializeField] private PlayerInteractor playerInteractor;
 
-    [Header("PlayerControl 컴포넌트")]
-    [SerializeField] private PlayerControl playerControl;
+    //[Header("PlayerControl 컴포넌트")]
+    //[SerializeField] private PlayerControl playerControl;
 
     [Header("플레이어 NavMesh 컴포넌트")]
     [SerializeField] private NavMeshAgent navMeshAgent;
@@ -32,16 +32,16 @@ public class PlayerInputGate : MonoBehaviour
 
     private void Awake()
     {
-        if (clickMove = null) clickMove = GetComponent<ClickMove>();
-        if (autoInteract = null) autoInteract = GetComponent<AutoInteract>();
-        if (playerInteractor = null) playerInteractor = GetComponent<PlayerInteractor>();
-        if (playerControl = null) playerControl = GetComponent<PlayerControl>();
-        if (navMeshAgent = null) navMeshAgent = GetComponent<NavMeshAgent>();
+        clickMove = GetComponent<ClickMove>();
+        autoInteract = GetComponent<AutoInteract>();
+        playerInteractor = GetComponent<PlayerInteractor>();
+        //playerControl = GetComponent<PlayerControl>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     /// <summary>
     /// 게임 입력 활성,비활성 전환
-    /// UI열림닫힘 타이밍에UIManager 호출
+    /// UI열림닫힘 타이밍에 UIManager에서 호출
     /// </summary>
     /// <param name="enabled"></param>
     public void SetGameplayInputEnabeld(bool enabled)
@@ -50,7 +50,10 @@ public class PlayerInputGate : MonoBehaviour
         if (clickMove != null) clickMove.enabled = enabled;
         if (autoInteract != null) autoInteract.enabled = enabled;
         if (playerInteractor != null) playerInteractor.enabled = enabled;
-        if (playerControl != null) playerControl.enabled = enabled;
+
+        //컨트롤 부분은 오히려 충동문제 나서 빼버리는게 나을지도,
+        //어차피 UI상호작용은 탑뷰에서만 가능하게 할거니까
+        //if (playerControl != null) playerControl.enabled = enabled;
 
         //이동중 UI가 열려을때 멈추게 처리
         if (navMeshAgent != null && navMeshAgent.enabled)
