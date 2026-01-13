@@ -77,8 +77,18 @@ public class AutoInteract : MonoBehaviour
         //애니메이션 없으면 직접 딜레이
         yield return new WaitForSeconds(fallbackDelay);
 
-        if (target != null && target.Interactable != null)
-            target.Interactable.Interact(this.gameObject);
+        //+리팩토링 관련-하나의 Interactable 실행-> 다수의 Interactable 실행
+        IReadOnlyList<InteractableBase> list = target.Getinteractables();
+        int i = 0;
+        while (i < list.Count)
+        {
+            InteractableBase interactable = list[i];
+            if (interactable != null && interactable.enabled)
+            {
+                interactable.Interact(gameObject);
+            }
+            i++;
+        }
 
         //1회 실행후 타겟 해제
         if(clickMove != null) clickMove.ClearTarget();
