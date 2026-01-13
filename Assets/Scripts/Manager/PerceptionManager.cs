@@ -19,8 +19,13 @@ using UnityEngine;
 /// [주의할것]
 /// -여기선 게임 규칙만 담당
 /// -시각적 표현은 다른 컴포넌트가 구독해서 처리하는 방식으로 갈것
+/// 
+/// +[루프리셋 관련 문제점]
+/// -루프리셋시 플레이어의 PerceptionState를 기본 디폴트 상태인 Hallucination으로 복구해야함
+/// ->리셋테이블에 등록할 것
+/// -누적치와 발견단서는 유지해야됨-인지적 오브젝트니까, 초기화되면 이상하잖아
 /// </summary>
-public class PerceptionManager : MonoBehaviour
+public class PerceptionManager : MonoBehaviour ,IResetTable
 {
     //인지 상태 정의
     public enum PerceptionState
@@ -98,8 +103,25 @@ public class PerceptionManager : MonoBehaviour
         curState = initialState;
     }
 
+    private void OnEnable()
+    {
+        //루프 리셋시 인지상태만 초기화
+        TryRegisterToLoopManager();
+    }
+
+    private void OnDisable()
+    {
+        if (LoopManager.Instance != null)
+        {
+            LoopManager.Instance.UnRegisterResetTable(this);
+        }
+    }
+
     private void Start()
     {
+        //OnEnable 문제때문에 start에도 넣음-라이프 사이클 관련
+        TryRegisterToLoopManager();
+
         //시작 시점에 외부가 동기화 할수 있게 이벤트 발송
         //old,new  상태 동일방지, 내부 SetState에서 처리
         SetState(curState, "게임 시작 초기 상태 적용");
@@ -110,6 +132,29 @@ public class PerceptionManager : MonoBehaviour
         UpdateForcedReality();
         UpdateTempReality();
         UpdateRandomRealityTick();
+    }
+
+    /// <summary>
+    /// 루프매니저-리셋테이블 모두 초기화할때 호출됨
+    /// -인지상태만 초기화 하고, 타이머 끊고,
+    /// -누적파라미터와 발견단서 목록은 유지
+    /// </summary>
+    public void ResetState()
+    {
+        forceRealityEndTime = 0.0f;
+        tempRealityEndTime = 0.0f;
+        randomTimer = 0.0f;
+
+        SetState(PerceptionState.Hallucination, "루프 리셋 : 인지상태 디폴트값으로 초기화");
+        Debug.Log("[PerceptionManager] ResetState : 인지상태만 초기화됨.(누적/단서발견 유지)");
+    }
+
+    /// <summary>
+    /// 리셋테이블 등록-start에도 넣게 따로 함수로 뺌
+    /// </summary>
+    private void TryRegisterToLoopManager()
+    {
+        LoopManager.Instance.RegisterResetTable(this);
     }
 
     /// <summary>
