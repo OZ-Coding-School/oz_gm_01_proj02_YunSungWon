@@ -283,8 +283,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyeBall: {fileID: 5593039161174940544}
-  viewDistance: 20
-  viewAngle: 110
+  viewDistance: 25
+  viewAngle: 150
   obstructionMask:
     serializedVersion: 2
     m_Bits: 128
