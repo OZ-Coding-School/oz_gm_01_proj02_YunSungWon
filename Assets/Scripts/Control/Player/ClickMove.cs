@@ -62,7 +62,7 @@ public class ClickMove : MonoBehaviour
         if (hitInteractable)
         {
             InteractTarget target = hit.collider.GetComponentInParent<InteractTarget>();
-            if (target != null && target.Interactable != null)
+            if (target != null && target.HasInteractables)
             {
                 SetTargetAndMove(target);
                 return;
@@ -77,7 +77,10 @@ public class ClickMove : MonoBehaviour
         }
     }
 
-    //상호작용 타겟지정+이동
+    /// <summary>
+    /// 상호작용 타겟지정+이동
+    /// </summary>
+    /// <param name="target"></param>
     private void SetTargetAndMove(InteractTarget target)
     {
         curTarget = target;
