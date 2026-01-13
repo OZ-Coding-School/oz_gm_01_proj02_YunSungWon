@@ -14,6 +14,9 @@ using UnityEngine;
 /// 
 /// -약 상호작용은 여기서, 인지상태 규칙은 PerceptionManager가 담당하게 하고,
 /// -IResetTable로 루프 시 약의 상태(1회성 소모품) 초기화
+/// 
+/// ++여기서 인터랙트는 UI 띄우는걸로 대체,
+/// 실제 인터랙트는 해당 UI에서 작동하게 변경
 /// </summary>
 public class MedicineInteractable : InteractableBase, IResetTable
 {
@@ -29,7 +32,24 @@ public class MedicineInteractable : InteractableBase, IResetTable
     [Header("디버그/연출 사유")]
     [SerializeField] private string reason = "";
 
-    private bool usedThisLoop;
+    [Header("열 UI 패널(약통 패널)")]
+    [SerializeField] private MedicineUIPanel panel;
+
+    [Header("이번 루프에 이미 복용했는지")]
+    [SerializeField] private bool usedThisLoop;
+
+    //UI에서 읽기 위한 현재 복용 가능 여부
+    public bool CanUse
+    {
+        get 
+        { 
+            if (!oneUsePerLoop)
+            {
+                return true;
+            }  
+            return !usedThisLoop;
+        } 
+    }
 
     private void OnEnable()
     {
@@ -41,18 +61,27 @@ public class MedicineInteractable : InteractableBase, IResetTable
         if (LoopManager.Instance != null) LoopManager.Instance.UnRegisterResetTable(this);
     }
 
+    //원래는 바로 효과적용
+    //->관련 컨텐스트 UI만 활성화 
     public override void Interact(GameObject interactor)
     {
-        if (oneUsePerLoop && usedThisLoop)
-        {
-            Debug.Log("[MedicineInteractable] 이번 루프에서 이미 복용함");
-            return;
-        }
+        InteractContext context = new InteractContext(interactor, gameObject, "약통 UI 오픈");
+        UIManager.Instance.OpenPanel(panel, context);
+    }
 
+    /// <summary>
+    /// UI버튼에서 호출할 실제 복용처리
+    /// </summary>
+    /// <returns></returns>
+    public bool TryUse()
+    {
+        if (!CanUse) return false;
+
+        if (perceptionManager == null) perceptionManager = PerceptionManager.Instance;
         perceptionManager.ForceReality(realityDuration, reason);
-        usedThisLoop = true;
 
-        Debug.Log("[MedicineInteractable] 약 복용완료 : 강제현실 진행 " + realityDuration.ToString("F2") + "s");
+        if(oneUsePerLoop) usedThisLoop = true;
+        return true;
     }
 
     public void ResetState()
