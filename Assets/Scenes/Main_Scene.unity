@@ -18735,7 +18735,7 @@ MonoBehaviour:
     type: 3}
   enemySpawnPoint: {fileID: 1297157134}
   frontDoorControl: {fileID: 386039133}
-  emergencyUnlockDelay: 1.5
+  emergencyUnlockDelay: 0.2
   doorOpenDelay: 0.2
   bathRoomDoorPoint: {fileID: 1384295556}
   bathRoomDoorControl: {fileID: 2117373492}
