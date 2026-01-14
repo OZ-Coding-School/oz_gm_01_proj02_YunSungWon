@@ -25,6 +25,9 @@ public class ControlToggle : MonoBehaviour
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private PlayerControl playerControl;
 
+    [Header("탑뷰 클릭무브 컴포넌트")]
+    [SerializeField] private ClickMove clickMove;
+
     //외부 접근용 프로퍼티
     public ControlMode CurMode { get; private set; }
 
@@ -32,6 +35,7 @@ public class ControlToggle : MonoBehaviour
     {
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (playerControl == null) playerControl = GetComponent<PlayerControl>();
+        if (clickMove == null) clickMove = GetComponent<ClickMove>();
     }
 
     private void Start()
@@ -59,6 +63,7 @@ public class ControlToggle : MonoBehaviour
         playerControl.enabled = false;
         agent.enabled = true;
         agent.isStopped = false;
+        clickMove.enabled = true;
 
         Debug.Log("탑뷰 모드 활성화-컨트롤러 off/ 네비메쉬 on");
     }
@@ -68,7 +73,8 @@ public class ControlToggle : MonoBehaviour
     /// </summary>
     private void EnableFPS()
     {
-        agent.isStopped = true;
+        clickMove.enabled = false;
+        //agent.isStopped = true;
         agent.enabled = false;
         playerControl.enabled = true;
 

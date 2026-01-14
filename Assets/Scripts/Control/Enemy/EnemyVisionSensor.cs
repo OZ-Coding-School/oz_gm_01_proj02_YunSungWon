@@ -131,7 +131,7 @@ public class EnemyVisionSensor : MonoBehaviour
         lastSeenTime = Time.time;
 
         //보였던 순간에 이벤트 1회 발생
-        if (!wasVisible) PlayerSpotted.Invoke();
+        if (!wasVisible) PlayerSpotted?.Invoke();
     }
 
     //테스트용 기즈모 유니티 에디터 사용
