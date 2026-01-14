@@ -142,4 +142,14 @@ public class EnemyDirector : MonoBehaviour
         Destroy(curEnemy);
         curEnemy = null;
     }
+
+    /// <summary>
+    /// 외부(라스트페이즈용)에서 괴한 강제 제거
+    /// </summary>
+    /// <param name="reason"></param>
+    public void ForceDespawnEnemy(string reason)
+    {
+        Debug.Log("[EnemyDirector] ForForceDespawnEnemy 호출됨 : " + reason);
+        DeSpawnEnemy();
+    }
 }
