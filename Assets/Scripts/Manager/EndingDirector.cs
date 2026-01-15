@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +41,9 @@ public class EndingDirector : MonoBehaviour
 
     [Header("괴한스폰 디렉터(롤백시에 맵에 남아있는 괴한 제거)")]
     [SerializeField] private EnemyDirector enemyDirector;
+
+    [Header("라스트 페이즈 돌입시 Vcam")]
+    [SerializeField] private CinemachineVirtualCamera FPScam;
 
     //엔딩 진행중 여부
     public bool IsEnding { get; private set; }
@@ -86,6 +90,8 @@ public class EndingDirector : MonoBehaviour
         //if (hallWayDoor != null) hallWayDoor.SetActive(false);
 
         Debug.Log("[EndingDirector] 엔딩 시작 : " + reason );
+
+        //FPScam.Priority = 100;
     }
 
     /// <summary>
