@@ -90,6 +90,9 @@ public class LoopManager : MonoBehaviour
     //플레이어 컨트롤러 보관
     private CharacterController characterController;
 
+    //++엔딩관련 추가-특수 상황에서 루프리셋 차단용
+    private bool isResetBlocked;
+
     //=====외부 접근용 프로퍼티=====//
     public float ElapsedSeconds { get { return elapsedSeconds; } }
     public float BreakInSeconds { get { return breakInSeconds; } }
@@ -97,6 +100,7 @@ public class LoopManager : MonoBehaviour
     public int LoopCount { get { return loopCount; } }
     public bool BatteryRemoved { get { return batteryRemoved; } }
     public BreakInPhase CurBreakInPhase  { get { return breakInPhase; } }
+    public bool IsResetBlocked { get { return isResetBlocked; } }
 
     private void Awake()
     {
@@ -217,6 +221,12 @@ public class LoopManager : MonoBehaviour
     /// <param name="reason"></param>
     public void ResetLoop(string reason)
     {
+        if (isResetBlocked)
+        {
+            Debug.Log("[LoopManager] ResetLoop 무시됨(리셋블락 트루상태) / reason = " + reason);
+            return;
+        }
+
         if (isResetting) return;
 
         StartCoroutine(LoopResetCo(reason));
@@ -240,6 +250,15 @@ public class LoopManager : MonoBehaviour
         //리셋 쿨타임 후 리셋 허용
         yield return new WaitForSeconds(resetCoolTime);
         isResetting = false;
+    }
+
+    /// <summary>
+    /// 엔딩 등 특수 상황에서 루프리셋을 차단/해제
+    /// </summary>
+    /// <param name="blocked"></param>
+    public void SetResetBlocked(bool blocked)
+    {
+        isResetBlocked = blocked;
     }
     //=================================================================//
     #endregion

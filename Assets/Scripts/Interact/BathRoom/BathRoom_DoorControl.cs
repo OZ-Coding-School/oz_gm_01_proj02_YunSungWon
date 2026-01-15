@@ -222,4 +222,14 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         //구독자에게 알림부분
         DoorStateChanged?.Invoke(oldState, doorState, reason, mode);
     }
+
+    /// <summary>
+    /// [라스트 페이즈용 강제 롤백-체크포인트 롤백용]
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="reason"></param>
+    public void ForceSetStateForRollBack(BathDoorState state, string reason)
+    {
+        SetState(state, reason, BathDoorTransitionMode.Instant);
+    }
 }

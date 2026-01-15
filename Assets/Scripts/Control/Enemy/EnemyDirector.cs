@@ -34,6 +34,15 @@ public class EnemyDirector : MonoBehaviour
     [Header("스폰위치")]
     [SerializeField] private Transform enemySpawnPoint;
 
+    [Header("현관문 컨트롤러")]
+    [SerializeField] private FrontDoorControl frontDoorControl;
+
+    [Header("비상키 침입 시 잠금해제 연출시간(임시)")]
+    [SerializeField] private float emergencyUnlockDelay = 1.5f;
+
+    [Header("현관문 열기 연출 전 딜레이(임시)")]
+    [SerializeField] private float doorOpenDelay = 0.2f;
+
     [Header("화장실 문 체크 포인트")]
     [SerializeField] private Transform bathRoomDoorPoint;
 
@@ -131,6 +140,55 @@ public class EnemyDirector : MonoBehaviour
             enemyControl.SetEntranceText("비상키가 있어서 다행이지..\n 뭐야! 당신 누구야!"); 
         }
         enemyControl.BeginScenario();
+
+        StartCoroutine(EntranceDoorFlowCo(method));
+    }
+
+    private IEnumerator EntranceDoorFlowCo(LoopManager.BreakInMethod method)
+    {
+        if (frontDoorControl == null)
+        {
+            Debug.Log("[EnemyDirector] frontDoorControl가 null 문연출없이 진행");
+            yield break;
+        }
+
+        //이미 부숴졌거나 열려있으면 스킵
+        if (frontDoorControl.CurState == FrontDoorControl.FrontDoorState.Broken ||
+            frontDoorControl.CurState == FrontDoorControl.FrontDoorState.Open)
+        {
+            yield break;
+        }
+
+        //도어락 연동부분-도어락 해제->열림
+        if (method == LoopManager.BreakInMethod.DoorLock)
+        {
+            //잠겨 있으면 "잠금해제"연출 
+            if (frontDoorControl.CurState == FrontDoorControl.FrontDoorState.Locked)
+            {
+                frontDoorControl.EnemyTryUnlock("도어락 침입");
+            }
+
+            //문 여는 템포
+            if (doorOpenDelay > 0.0f) yield return new WaitForSeconds(doorOpenDelay);
+
+            frontDoorControl.EnemyTryOpenDoor("도어락 침입");
+            yield break;
+        }
+
+        //EmergncyKey 연동부분 : 기다렸다가 잠금해제 후 열기
+        if (method == LoopManager.BreakInMethod.EmergencyKey)
+        {
+            if (emergencyUnlockDelay > 0.0f) yield return new WaitForSeconds(emergencyUnlockDelay);
+
+            if (frontDoorControl.CurState == FrontDoorControl.FrontDoorState.Locked)
+            {
+                frontDoorControl.EnemyTryUnlock("비상키 침입");
+            }
+
+            if(doorOpenDelay>0.0f) yield return new WaitForSeconds(doorOpenDelay);
+
+            frontDoorControl.EnemyTryOpenDoor("비상키 침입");
+        }
     }
 
     /// <summary>
@@ -141,5 +199,15 @@ public class EnemyDirector : MonoBehaviour
         if (curEnemy == null) return;
         Destroy(curEnemy);
         curEnemy = null;
+    }
+
+    /// <summary>
+    /// 외부(라스트페이즈용)에서 괴한 강제 제거
+    /// </summary>
+    /// <param name="reason"></param>
+    public void ForceDespawnEnemy(string reason)
+    {
+        Debug.Log("[EnemyDirector] ForForceDespawnEnemy 호출됨 : " + reason);
+        DeSpawnEnemy();
     }
 }
