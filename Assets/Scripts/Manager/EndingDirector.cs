@@ -1,8 +1,10 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Playables;
 
 /// <summary>
 /// 엔딩 진행 감독 (골격만 처리 day7)
@@ -59,6 +61,26 @@ public class EndingDirector : MonoBehaviour
 
     [Header("라스트 페이즈 돌입시 Vcam")]
     [SerializeField] private CinemachineVirtualCamera FPScam;
+
+
+    //=====================엔딩 타임라인 관련 필드=====================//
+    [Header("엔딩 컷씬 타임라인")]
+    [SerializeField] private PlayableDirector endingPlayableDirector;
+
+    [Header("컷씬 중 조작 잠금용")]
+    [SerializeField] private ClickMove clickMove;
+    [SerializeField] private PlayerControl playerControl;
+    [SerializeField] private NavMeshAgent playerNavMeshAgent;
+    [SerializeField] private CharacterController playerCharacterController;
+
+    [Header("컷씬 UI")]
+    [SerializeField] private CanvasGroup blackOverlay;
+    [SerializeField] private TextMeshProUGUI endText;
+
+    //컷씬 플레이중 플래그
+    private bool isEndingCutScenePlaying;
+
+    //================================================================//
 
     //엔딩 진행중 여부
     public bool IsEnding { get; private set; }
