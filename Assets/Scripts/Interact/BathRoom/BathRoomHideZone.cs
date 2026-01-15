@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,9 @@ public class BathRoomHideZone : MonoBehaviour , IResetTable
     [Header("화장실 문-거실쪽 콜라이더 비활성화")]
     [SerializeField] private GameObject clickColliderOUT;
 
+    [Header("화장실 진입시 Vcam")]
+    [SerializeField] private CinemachineVirtualCamera bathRoomVcam;
+
     private void OnEnable()
     {
         LoopManager.Instance.RegisterResetTable(this);
@@ -49,6 +53,7 @@ public class BathRoomHideZone : MonoBehaviour , IResetTable
         {
             if(playerStealth != null) playerStealth.SetHidden(true);
             clickColliderOUT.SetActive(false);
+            bathRoomVcam.Priority = 20;
         }
     }
 }

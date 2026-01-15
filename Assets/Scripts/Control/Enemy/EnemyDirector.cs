@@ -61,6 +61,11 @@ public class EnemyDirector : MonoBehaviour
     //현재 소환된 괴한 프리팹 저장용
     private GameObject curEnemy;
 
+    private void Awake()
+    {
+        if (loopManager == null) loopManager = LoopManager.Instance;
+    }
+
     /// <summary>
     /// 이벤트 등록 + 리셋 테이블 등록
     /// </summary>
