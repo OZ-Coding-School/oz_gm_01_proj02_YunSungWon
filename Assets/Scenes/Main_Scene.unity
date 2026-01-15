@@ -1440,7 +1440,7 @@ Transform:
   m_GameObject: {fileID: 83660691}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.48, z: 0}
+  m_LocalPosition: {x: 0, y: -1.26, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2641,7 +2641,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 144531525}
-  m_Layer: 7
+  - component: {fileID: 144531526}
+  - component: {fileID: 144531527}
+  m_Layer: 8
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2666,6 +2668,41 @@ Transform:
   - {fileID: 1583539805}
   m_Father: {fileID: 2117373491}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &144531526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144531524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61201cd4d456144e9f43c86da09162e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorControl: {fileID: 2117373492}
+  lastPhaseEnemyTag: LastPhaseEnemy
+--- !u!65 &144531527
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144531524}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2, y: 15, z: 8}
+  m_Center: {x: -3.4, y: 10, z: 4.5}
 --- !u!1 &186160442
 GameObject:
   m_ObjectHideFlags: 0
@@ -2854,7 +2891,7 @@ Transform:
   m_GameObject: {fileID: 193336970}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.58, z: 0}
+  m_LocalPosition: {x: 0, y: -0.88, z: 0}
   m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2996,7 +3033,7 @@ Transform:
   m_GameObject: {fileID: 202934740}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.04, y: 6.93, z: 5.3199997}
+  m_LocalPosition: {x: -11.5, y: 6.93, z: 5.3199997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3406,7 +3443,7 @@ Transform:
   m_GameObject: {fileID: 227262715}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.41, z: 0}
+  m_LocalPosition: {x: 0, y: -1.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4603,7 +4640,7 @@ Transform:
   m_GameObject: {fileID: 336483622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.54, y: 4.93, z: 3.32}
+  m_LocalPosition: {x: -12, y: 4.93, z: 3.32}
   m_LocalScale: {x: 2, y: 4, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5252,7 +5289,7 @@ MonoBehaviour:
   doorHingePivot: {fileID: 369192419}
   closedYaw: 0
   openYaw: -90
-  brokenYaw: -180
+  brokenYaw: 180
   rotateDuration: 0.5
 --- !u!1 &390705740
 GameObject:
@@ -5652,7 +5689,7 @@ Transform:
   m_GameObject: {fileID: 440515003}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.64, y: 0.38, z: -2.41}
+  m_LocalPosition: {x: -0.64, y: 0.1, z: -2.41}
   m_LocalScale: {x: 1.5, y: 0.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7604,7 +7641,7 @@ Transform:
   m_GameObject: {fileID: 643734728}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.51, z: 0}
+  m_LocalPosition: {x: 0, y: -1.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10770,11 +10807,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c56489206a762b4c9914646da9b8fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTransform: {fileID: 336483627}
   loopManager: {fileID: 1896098353}
   controlToggle: {fileID: 336483631}
+  exitTrigger: {fileID: 1632718386}
+  frontDoorControl: {fileID: 386039133}
   lastCheckPoint: {fileID: 372398209}
   bathRoomDoorControl: {fileID: 2117373492}
   enemyDirector: {fileID: 1896098354}
+  lastPhaseEnemyPrefab: {fileID: 4626731640683790335, guid: b0f3fbba689775d42bccab3463e8264b,
+    type: 3}
+  lastPhaseEnemySpawnPoint: {fileID: 1297157134}
+  breakDoorDelay: 3
+  spawnEnemyDelayAfterBreak: 1
+  FPScam: {fileID: 202934741}
 --- !u!4 &975299369
 Transform:
   m_ObjectHideFlags: 0
@@ -11118,7 +11164,7 @@ Transform:
   m_GameObject: {fileID: 1013234852}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.51, z: 0}
+  m_LocalPosition: {x: 0, y: -1.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11571,7 +11617,7 @@ Transform:
   m_GameObject: {fileID: 1040335976}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16322,7 +16368,7 @@ GameObject:
   - component: {fileID: 1585631918}
   - component: {fileID: 1585631917}
   - component: {fileID: 1585631916}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: TEST_Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17250,7 +17296,7 @@ GameObject:
   - component: {fileID: 1685685047}
   - component: {fileID: 1685685046}
   - component: {fileID: 1685685045}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: DoorHinge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18063,7 +18109,7 @@ Transform:
   m_GameObject: {fileID: 1846410460}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: -3.8, z: 1.31}
+  m_LocalPosition: {x: 1, y: -3.84, z: 1.32}
   m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18358,7 +18404,7 @@ Transform:
   m_GameObject: {fileID: 1885250331}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.07, z: 0}
   m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18721,6 +18767,8 @@ MonoBehaviour:
   emergencyMaxSeconds: 40
   spawnYOffset: 0.5
   resetCoolTime: 0.5
+  bathVCam: {fileID: 1880991859}
+  kitchenVcam: {fileID: 18282508}
 --- !u!114 &1896098354
 MonoBehaviour:
   m_ObjectHideFlags: 0
