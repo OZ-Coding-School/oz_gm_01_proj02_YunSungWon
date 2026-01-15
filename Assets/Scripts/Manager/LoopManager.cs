@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.AI;
 using System.Runtime.CompilerServices;
+using Cinemachine;
 
 /// <summary>
 /// 게임의 핵심 시스템 (타이머/침입/리셋) 관리
@@ -73,6 +74,13 @@ public class LoopManager : MonoBehaviour
 
     [Header("루프리셋 중복 방지(쿨타임)")]
     [SerializeField] private float resetCoolTime = 0.5f;
+
+    //v캠관련
+    [Header("화장실 Vcam")]
+    [SerializeField] private CinemachineVirtualCamera bathVCam;
+
+    [Header("부엌 Vcam")]
+    [SerializeField] private CinemachineVirtualCamera kitchenVcam;
 
     //도어락은 이제 리셋 테이블로 복구하게 만들거야-기존 도어락 필드 제거
 
@@ -210,6 +218,9 @@ public class LoopManager : MonoBehaviour
         ResetAllResetTables();
         TeleportPlayerToStart();
         OnLoopStart();
+
+        bathVCam.Priority = 0;
+        kitchenVcam.Priority = 0;
 
         LoopStarted?.Invoke(loopCount);
     }
