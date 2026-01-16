@@ -93,6 +93,23 @@ public class EndingDirector : MonoBehaviour
     private Coroutine lastPhaseRoutine;
     private GameObject curLastPhaseEnemy;
 
+    //타임라인 종료 콜백 연결-
+    private void OnEnable()
+    {
+        if (endingPlayableDirector != null)
+        {
+            endingPlayableDirector.stopped += OnFinalEndingTimelineStopped;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (endingPlayableDirector != null)
+        {
+            endingPlayableDirector.stopped -= OnFinalEndingTimelineStopped;
+        }
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -332,32 +349,129 @@ public class EndingDirector : MonoBehaviour
 
     /// <summary>
     /// 엔딩중 플레이어가 Exit_Trigger에 도달시 호출
+    /// +엔딩 타임라인이랑 엮어야 함
     /// </summary>
     /// <param name="reason"></param>
     public void OnPlayerReachedExit(string reason)
     {
         if (!IsEnding) return;
+        if (isEndingCutScenePlaying) return;
 
         Debug.Log("[EndingDirector] 탈출 성공 : " + reason );
 
-        EndEnding("루프 탈출 성공");
+        BeginFinalEndingCutScene("루프 탈출 성공");
     }
 
     /// <summary>
-    /// 엔딩 종료(성공/실패 공용)
+    /// 최종 엔딩 컷씬 시작
+    /// -플레이어 조작 잠그고,
+    /// -타임라인 재생할 것
     /// </summary>
     /// <param name="reason"></param>
+    private void BeginFinalEndingCutScene(string reason)
+    {
+        isEndingCutScenePlaying = true;
+
+        Debug.Log("[EndingDirector] 최종 엔딩 컷씬 시작 : " + reason);
+
+        //변이괴한 정리
+        DespawnLastPhaseEnemy("최종컷씬 시작 : 변이괴한 제거");
+
+        //플레이어 조작/이동 잠금
+        SetCutSceneLock(true);
+
+        //엔딩용 UI 초기화부분
+        if (blackOverlay != null) blackOverlay.alpha = 0.0f;
+        if (endText != null) endText.gameObject.SetActive(false);
+
+        //타임라인 재생
+        endingPlayableDirector.time = 0.0f;
+        endingPlayableDirector.Play();
+    }
+
+    /// <summary>
+    /// 컷씬 중 플레이어 입력,이동 모두 잠그는 용
+    /// -라스트페이즈에서 FPS 입력 제한
+    /// </summary>
+    /// <param name="isLocked"></param>
+    private void SetCutSceneLock(bool isLocked)
+    {
+        //입력값 관련 탑뷰,FPS 둘다 잠그고
+        if (clickMove != null) clickMove.enabled = !isLocked;
+        if (playerControl != null) playerControl.enabled = !isLocked;
+
+        //네비메쉬 관련
+        if (playerNavMeshAgent != null)
+        {
+            if (isLocked)
+            {
+                if (playerNavMeshAgent.enabled)
+                {
+                    playerNavMeshAgent.isStopped = true;
+                    playerNavMeshAgent.ResetPath();
+                    playerNavMeshAgent.enabled = false;
+                }
+            }
+            else
+            {
+                //이게 굳이 필요할까.. 안쓸거 같긴 한데
+                playerNavMeshAgent.enabled = true;
+                playerNavMeshAgent.isStopped = false;
+            }
+        }
+
+        //캐릭터 컨트롤러 관련
+        if (playerCharacterController != null)
+        {
+            playerCharacterController.enabled = !isLocked;
+        }
+
+        //커서도 숨김표시
+        if (isLocked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
+    /// <summary>
+    /// 타임라인 종료 콜백
+    /// -여기서 화이트아웃,관련 텍스트 처리
+    /// -
+    /// </summary>
+    /// <param name="director"></param>
+    private void OnFinalEndingTimelineStopped(PlayableDirector director)
+    {
+        if (!isEndingCutScenePlaying) return;
+
+        Debug.Log("[EndingDirector] 최종엔딩 컷씬 종료됨");
+
+        //암전,텍스트 있으면 보이게 하고,
+        if (blackOverlay != null) blackOverlay.alpha = 1.0f;
+        if (endText != null)
+        {
+            endText.gameObject.SetActive(true);
+            endText.text = "내집에서 나가";
+        }
+
+        //엔딩 시스템 리셋 차단 해제(다시 루프 시스템 되돌릴경우 사용)
+        EndEnding("최종 컷씬 종료");
+
+        //근데? 게임 컨셉상? 그냥 종료해버릴거야 컷씬 끝나면-추후수정 가능성있긴함
+        Application.Quit();
+        Debug.Log("[EndingDirector] 게임 강제종료됨");
+    }
+
+    /// <summary>
+    /// 엔딩종료-다시 루프매니저 되살리고, 블락 해제(혹시나 게임 되돌릴때 사용)
+    /// </summary>
     private void EndEnding(string reason)
     {
-        Debug.Log("[EndingDirector] 엔딩 종료 : " + reason);
+        Debug.Log("[EndingDirector] 엔딩 종료됨 : " + reason);
 
         if (loopManager == null) loopManager = LoopManager.Instance;
         if (loopManager != null) loopManager.SetResetBlocked(false);
 
         IsEnding = false;
     }
-
-    //혹시 루프엔딩 시점에 다시 탑뷰로 복귀해야할 상황이 있을 수도 있으니까,
-    //여기서 추가 하거나, 아니면 다음 씬으로 넘어가게
-    //일단 탈출 성공 시점에서 게임종료/연출 로 이어지게 구현먼저->추후 수정
 }
