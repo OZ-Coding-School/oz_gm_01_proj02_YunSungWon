@@ -101,6 +101,10 @@ public class LoopManager : MonoBehaviour
     //++엔딩관련 추가-특수 상황에서 루프리셋 차단용
     private bool isResetBlocked;
 
+    //라스트 페이즈 진입시 기존루프 괴한 시나리오 이벤트 원천차단 플래그
+    private bool isScenarioBlocked;
+    public bool IsScenarioBlocked { get { return isScenarioBlocked; } }
+
     //=====외부 접근용 프로퍼티=====//
     public float ElapsedSeconds { get { return elapsedSeconds; } }
     public float BreakInSeconds { get { return breakInSeconds; } }
@@ -134,15 +138,19 @@ public class LoopManager : MonoBehaviour
 
     private void Update()
     {
-        elapsedSeconds += Time.deltaTime;
-
-        //침입 타임라인 처리(단계 기반)
-        UpdateBreakInTimeLine();
-
-        //사망 트리거 들어갈곳(일단 테스트용)
-        if (Input.GetKeyDown(KeyCode.K))
+        //라스트 페이즈에선 기존루프 시나리오 진행중단
+        if (!isScenarioBlocked)
         {
-            ResetLoop("테스트 사망처리");
+            elapsedSeconds += Time.deltaTime;
+
+            //침입 타임라인 처리(단계 기반)
+            UpdateBreakInTimeLine();
+
+            //사망 트리거 들어갈곳(일단 테스트용)
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                ResetLoop("테스트 사망처리");
+            }
         }
     }
 
@@ -270,6 +278,20 @@ public class LoopManager : MonoBehaviour
     public void SetResetBlocked(bool blocked)
     {
         isResetBlocked = blocked;
+    }
+
+    //라스트페이즈 상황에서 루프 침입 타임라인 차단/해제용
+    public void SetScenarioBlocked(bool blocked, string reason)
+    {
+        isScenarioBlocked = blocked;
+        Debug.Log("[LoopManager] SetScenarioBlocked 호출 : "+ blocked + "==" + reason);
+
+        if (blocked)
+        {
+            //침입 단계 종료 처리-이벤트 추가 발행 방지
+            breakInPhase = BreakInPhase.Done;
+            emergencyKeySeconds = 1.0f;
+        }
     }
     //=================================================================//
     #endregion

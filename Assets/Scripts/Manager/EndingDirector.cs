@@ -132,7 +132,16 @@ public class EndingDirector : MonoBehaviour
         IsEnding = true;
 
         if (loopManager == null) loopManager = LoopManager.Instance;
-        if (loopManager != null) loopManager.SetResetBlocked(true);
+        if (loopManager != null)
+        {
+            loopManager.SetResetBlocked(true);
+            loopManager.SetScenarioBlocked(true, "라스트 페이즈 진입 : 루프시나리오는 완전차단됨");
+        }
+
+        if (enemyDirector != null)
+        {
+            enemyDirector.SetLoopEnemyBlocked(true, "라스트 페이즈 진입 : 루프 괴한 완전차단");
+        }
 
         //UI 열려있는 상태면 닫기
         if (UIManager.Instance != null) UIManager.Instance.CloseCurPanel("엔딩 시작 : UI 강제 닫힘");
