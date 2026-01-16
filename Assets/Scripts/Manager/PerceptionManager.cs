@@ -101,7 +101,7 @@ public class PerceptionManager : MonoBehaviour ,IResetTable
 
         //DDL은 딱히 없어도 될거 같긴한데.. 어차피 씬 하나에서 다 이루어질거니까.
         //일단 집어넣고 나중에 생각
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         curState = initialState;
     }

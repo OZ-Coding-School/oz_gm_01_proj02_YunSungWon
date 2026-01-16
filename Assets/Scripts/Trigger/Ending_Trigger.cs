@@ -10,10 +10,23 @@ using UnityEngine;
 /// </summary>
 public class Ending_Trigger : MonoBehaviour
 {
+    [Header("엔딩 디렉터")]
+    [SerializeField] private EndingDirector director;
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        EndingDirector.Instance.OnPlayerReachedExit("복도 끝 엔딩트리거 도달");
+        Debug.Log("[Ending_Trigger]엔딩 트리거 자체는 들어옴");
+
+
+        if (director == null)
+        {
+            Debug.Log("[Ending_Trigger] 디렉터 null 났음");
+        }
+
+        director.OnPlayerReachedExit("복도 끝 엔딩트리거 도달");
+
+        Debug.Log("[Ending_Trigger]엔딩 트리거 OnPlayerReachedExit 지나침");
     }
 }

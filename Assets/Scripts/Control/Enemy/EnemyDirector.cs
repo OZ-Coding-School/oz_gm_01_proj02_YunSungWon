@@ -61,6 +61,12 @@ public class EnemyDirector : MonoBehaviour
     //현재 소환된 괴한 프리팹 저장용
     private GameObject curEnemy;
 
+    //라스트 페이즈 동안 루프 괴한 스폰/연출 차단 플래그
+    private bool isLoopEnemyBlocked;
+
+    //현관문 연출 코루틴 핸들
+    private Coroutine entranceDoorFlowRoutine;
+
     private void Awake()
     {
         if (loopManager == null) loopManager = LoopManager.Instance;
@@ -88,6 +94,7 @@ public class EnemyDirector : MonoBehaviour
 
     private void OnLoopStarted(int loopCount)
     {
+        if (isLoopEnemyBlocked) return;
         DeSpawnEnemy();
     }
 
@@ -98,6 +105,8 @@ public class EnemyDirector : MonoBehaviour
     private void OnBreakInSucceeded(LoopManager.BreakInMethod method)
     {
         Debug.Log("[EnemyDirector] 침입 성공 이벤트 수신" + method);
+
+        if (isLoopEnemyBlocked) return;
 
         if (curEnemy != null) return;
         SpawnEnemy(method);
@@ -111,6 +120,8 @@ public class EnemyDirector : MonoBehaviour
     /// <param name="emergencyTimeSeconds"></param>
     private void OnBreakInFailedByBattery(float emergencyTimeSeconds)
     {
+        if (isLoopEnemyBlocked) return;
+
         Debug.Log("[EnemyDirector] 괴한 대사 : 뭐야? 배터리 다 됐어? 미치겠네..");
     }
 
@@ -146,7 +157,13 @@ public class EnemyDirector : MonoBehaviour
         }
         enemyControl.BeginScenario();
 
-        StartCoroutine(EntranceDoorFlowCo(method));
+        if (entranceDoorFlowRoutine != null)
+        {
+            StopCoroutine(entranceDoorFlowRoutine);
+            entranceDoorFlowRoutine = null;
+        }
+
+        entranceDoorFlowRoutine = StartCoroutine(EntranceDoorFlowCo(method));
     }
 
     private IEnumerator EntranceDoorFlowCo(LoopManager.BreakInMethod method)
@@ -212,7 +229,29 @@ public class EnemyDirector : MonoBehaviour
     /// <param name="reason"></param>
     public void ForceDespawnEnemy(string reason)
     {
-        Debug.Log("[EnemyDirector] ForForceDespawnEnemy 호출됨 : " + reason);
+        Debug.Log("[EnemyDirector] ForceDespawnEnemy 호출됨 : " + reason);
         DeSpawnEnemy();
+    }
+
+    /// <summary>
+    /// 라스트페이즈 진입 시 루프괴한의 스폰,연출 원천 차단용
+    /// </summary>
+    /// <param name="blocked"></param>
+    /// <param name="reason"></param>
+    public void SetLoopEnemyBlocked(bool blocked, string reason)
+    {
+        isLoopEnemyBlocked = blocked;
+        Debug.Log("[EnemyDirector] SetLoopEnemyBlocked 호출됨 : " + blocked + "==" + reason);
+
+        if (blocked)
+        {
+            if (entranceDoorFlowRoutine != null)
+            {
+                StopCoroutine(entranceDoorFlowRoutine);
+                entranceDoorFlowRoutine = null;
+            }
+
+            DeSpawnEnemy();
+        }
     }
 }

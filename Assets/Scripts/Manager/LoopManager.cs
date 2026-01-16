@@ -101,6 +101,14 @@ public class LoopManager : MonoBehaviour
     //++엔딩관련 추가-특수 상황에서 루프리셋 차단용
     private bool isResetBlocked;
 
+    //라스트 페이즈 진입시 기존루프 괴한 시나리오 이벤트 원천차단 플래그
+    private bool isScenarioBlocked;
+    public bool IsScenarioBlocked { get { return isScenarioBlocked; } }
+
+    //오프닝(게임시작전 연출)이후 게임진행 기점 플래그
+    private bool isGameRunning;
+    public bool IsGameRunning { get { return isGameRunning; } }
+
     //=====외부 접근용 프로퍼티=====//
     public float ElapsedSeconds { get { return elapsedSeconds; } }
     public float BreakInSeconds { get { return breakInSeconds; } }
@@ -129,11 +137,18 @@ public class LoopManager : MonoBehaviour
     private void Start()
     {
         //첫 루프 시작
-        StartNewLoop();
+        //StartNewLoop();
+        //여기 부분 이제 오프닝 연출 들어가고 거기서 타이밍 잡아줄거야. 일단 주석처리해서 테스트 후에 지울것
     }
 
     private void Update()
     {
+        //오프닝연출 중일때 차단
+        if (!isGameRunning) return;
+
+        //라스트 페이즈에선 기존루프 시나리오 진행중단
+        if (isScenarioBlocked) return;
+
         elapsedSeconds += Time.deltaTime;
 
         //침입 타임라인 처리(단계 기반)
@@ -270,6 +285,20 @@ public class LoopManager : MonoBehaviour
     public void SetResetBlocked(bool blocked)
     {
         isResetBlocked = blocked;
+    }
+
+    //라스트페이즈 상황에서 루프 침입 타임라인 차단/해제용
+    public void SetScenarioBlocked(bool blocked, string reason)
+    {
+        isScenarioBlocked = blocked;
+        Debug.Log("[LoopManager] SetScenarioBlocked 호출 : "+ blocked + "==" + reason);
+
+        if (blocked)
+        {
+            //침입 단계 종료 처리-이벤트 추가 발행 방지
+            breakInPhase = BreakInPhase.Done;
+            emergencyKeySeconds = 1.0f;
+        }
     }
     //=================================================================//
     #endregion
@@ -423,4 +452,32 @@ public class LoopManager : MonoBehaviour
     }
     //=================================================================//
     #endregion
+
+    /// <summary>
+    /// 오프닝 연출때 첫 루프 StartNewLoop 호출할거 퍼블릭으로 래핑
+    /// </summary>
+    /// <param name="reason"></param>
+    public void BeginGameFromOpening(string reason)
+    {
+        Debug.Log("[LoopManager] BeginGameFromOpening 호출됨 : " + reason);
+        isGameRunning = true;
+        isScenarioBlocked = false;
+        
+        StartNewLoop();
+    }
+
+    /// <summary>
+    /// 오프닝 타임라인 재생전에 호출 할것
+    /// -오픈 연출중에 루프 시스템 완전히 정지시키게
+    /// </summary>
+    /// <param name="reason"></param>
+    public void PrepareForOpening(string reason)
+    {
+        Debug.Log("[LoopManager] PrepareForOpening 호출됨 : " + reason);
+
+        isGameRunning = false;
+        isScenarioBlocked = true;
+        breakInPhase = BreakInPhase.Done;
+        emergencyKeySeconds = -1.0f;
+    }
 }
