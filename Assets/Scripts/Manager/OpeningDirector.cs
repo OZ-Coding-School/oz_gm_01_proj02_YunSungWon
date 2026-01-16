@@ -78,7 +78,7 @@ public class OpeningDirector : MonoBehaviour
 
         isOpeningPlaying = false;
 
-        //입력잠금 해제->마우스 커서만 숨기는걸로 변경
+        //입력잠금 해제->마우스 커서만 해제로 변경
         SetControlLocked(false);
 
         StartLoopImmediately("오프닝 종료 게임루프 시작");
@@ -110,6 +110,11 @@ public class OpeningDirector : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }
