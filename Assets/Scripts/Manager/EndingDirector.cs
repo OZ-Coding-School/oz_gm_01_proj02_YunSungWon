@@ -62,6 +62,8 @@ public class EndingDirector : MonoBehaviour
     [Header("라스트 페이즈 돌입시 Vcam")]
     [SerializeField] private CinemachineVirtualCamera FPScam;
 
+    [Header("라스트 페이즈 돌입시 조명 연출")]
+    [SerializeField] private LastPhaseLightDirector lastPhaseLightDirector;
 
     //=====================엔딩 타임라인 관련 필드=====================//
     [Header("엔딩 컷씬 타임라인")]
@@ -169,6 +171,9 @@ public class EndingDirector : MonoBehaviour
         RestartLastPhaseSequence("BeginEnding 호출");
 
         Debug.Log("[EndingDirector] 엔딩 시작 : " + reason );
+
+        //조명연출 라스트페이즈 라이트디렉터 호출
+        lastPhaseLightDirector.ApplyLastPhaseLighting("라스트페이즈 진입 : 조명연출 시작");
 
         FPScam.Priority = 100;
     }
