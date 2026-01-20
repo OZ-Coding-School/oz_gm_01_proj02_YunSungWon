@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chaseUpdateInterval: 0.5
-  killdistance: 5
+  killdistance: 8
 --- !u!54 &-9001601778174532984
 Rigidbody:
   m_ObjectHideFlags: 0

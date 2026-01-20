@@ -269,7 +269,7 @@ MonoBehaviour:
   chaseUpdateInterval: 0.3
   chaseLostReturnTime: 1
   enableKillTest: 1
-  killDistance: 2.5
+  killDistance: 5
 --- !u!114 &411897202786437202
 MonoBehaviour:
   m_ObjectHideFlags: 0
