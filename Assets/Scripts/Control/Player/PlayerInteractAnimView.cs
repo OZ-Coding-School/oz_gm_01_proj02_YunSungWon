@@ -49,11 +49,16 @@ public class PlayerInteractAnimView : MonoBehaviour
     //애니 이벤트 타이밍 도착 여부
     private bool isAnimEventArrived;
 
+    //애니 이벤트 끝난 타이밍 도착 여부
+    private bool isAnimEndArrived;
+
     //애니 타임아웃 처리 코루틴
     private Coroutine waitCoroutin;
 
     //AutoInteract 에서 애니 이벤트 도착 여부 확인용
     public bool IsAnimEventArrived { get { return isAnimEventArrived; } }
+
+    public bool IsBusy { get { return isBusy; } }
 
     private void Awake()
     {
@@ -70,18 +75,22 @@ public class PlayerInteractAnimView : MonoBehaviour
     /// <param name="onMoment"></param>
     public bool TryPlay(int typeId)
     {
+        Debug.Log("[AnimView]TryPlay 호출됨 IsBusy상태" + IsBusy);
+
         if (isBusy) return false;
+
+        isBusy = true;
+        isAnimEventArrived = false;
+        isAnimEndArrived = false;
 
         //애니메이터 없으면, 애니 이벤트 즉시 도착 처리로 알림
         if (animator == null)
         {
-            isBusy = true;
-            isAnimEventArrived = false;
+            isAnimEventArrived = true;
+            isAnimEndArrived = true;
+            isBusy = false;
             return true;
         }
-
-        isBusy = true;
-        isAnimEventArrived = false;
 
         animator.SetInteger(interactTypeHash, typeId);
         animator.ResetTrigger(interactTriggerHash);
@@ -90,7 +99,7 @@ public class PlayerInteractAnimView : MonoBehaviour
         //기존 코루틴 정리
         if (waitCoroutin != null)
         {
-            StopCoroutine(WaitForMomentCo());
+            StopCoroutine(waitCoroutin);
             waitCoroutin = null;
         }
 
@@ -99,12 +108,22 @@ public class PlayerInteractAnimView : MonoBehaviour
     }
 
     /// <summary>
-    /// 이벤트 호출용-실제로 상호작용 일어나는 이벤트 프레임에서 호출할 것
+    /// 이벤트 호출용-실제로 상호작용 일어나는! 이벤트 프레임에서 호출할 것
     /// </summary>
     public void OnAutoInteractAnimationMoment()
     {
-        Debug.Log("모션이벤트 실제로 실행중");
+        Debug.Log("[AnimView] 이벤트 모먼트 호출됨");
         isAnimEventArrived = true;
+    }
+
+    /// <summary>
+    /// 이벤트 호출용- 실제로 상호작용이 끝나는! 프레임에서 호출할 것
+    /// </summary>
+    public void OnAutoInteractAnimationEnd()
+    {
+        Debug.Log("[AnimView] 이벤트 엔드 호출됨");
+        isAnimEndArrived = true;
+        Release();
     }
 
     /// <summary>
@@ -119,7 +138,6 @@ public class PlayerInteractAnimView : MonoBehaviour
             //이벤트 들어오는거 먼저 대기
             while (!isAnimEventArrived && elapsed < maxWaitForAnimationEvent)
             {
-                Debug.Log("모션이벤트 들어옴");
                 elapsed += Time.deltaTime;
                 yield return null;
             }
@@ -127,7 +145,6 @@ public class PlayerInteractAnimView : MonoBehaviour
             //이벤트 대기시간 이후에도 안오면 폴백딜레이로 보험처리
             if (!isAnimEventArrived && FallbackDelay > 0.0f)
             {
-                Debug.Log("모션이벤트 안들어오고 폴백처리되고 있음");
                 yield return new WaitForSeconds(FallbackDelay);
             }
 
@@ -140,7 +157,6 @@ public class PlayerInteractAnimView : MonoBehaviour
         {
             if (FallbackDelay > 0.0f)
             {
-                Debug.Log("모션이벤트 안들어오고 폴백처리되고 있음");
                 yield return new WaitForSeconds(FallbackDelay);
             }
             isAnimEventArrived = true;

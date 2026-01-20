@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 995fdbb14a70ae24ab348f9e2f2fed48
+guid: 97d28ceb02b1bf246a059b0d0c987619
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: CloseDoor(1)
+      name: LockedDoor(3)
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 144
+      lastFrame: 157
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -47,7 +47,7 @@ ModelImporter:
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
-      loopBlendPositionY: 1
+      loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
@@ -57,14 +57,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.39602917
+      - time: 0.34587246
         functionName: OnAutoInteractAnimationMoment
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.5924432
+      - time: 0.6386354
         functionName: OnAutoInteractAnimationEnd
         data: 
         objectReferenceParameter: {instanceID: 0}

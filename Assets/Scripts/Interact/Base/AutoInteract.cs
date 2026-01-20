@@ -63,10 +63,10 @@ public class AutoInteract : MonoBehaviour
         float distToPoint = Vector3.Distance(this.transform.position, target.InteractPoint.position);
         if (distToPoint > target.InteractDistance) return;
 
-        StartCoroutine(InteractCO(target));
+        StartCoroutine(InteractCo(target));
     }
 
-    private IEnumerator InteractCO(InteractTarget target)
+    private IEnumerator InteractCo(InteractTarget target)
     {
         isRunning = true;
         agent.isStopped = true;
@@ -80,26 +80,36 @@ public class AutoInteract : MonoBehaviour
         //플레이어 애니메이션 재생
         if (playerInteractAnimView != null)
         {
+            //애니 아직 끝나지 않았으면 상호작용은 실행하지 않게
+            if (playerInteractAnimView.IsBusy)
+            {
+                agent.isStopped = false;
+                isRunning = false;
+                yield break;
+            }
+
             bool played = playerInteractAnimView.TryPlay(target.InteractAnimId);
 
-            //다른 애니메이션 진행 중이면, 애니메이션 없이 진행
-            if (played)
+            //TryPlay 실패시에도 상호작용 실행하지 않게
+            if (!played)
             {
-                while (!playerInteractAnimView.IsAnimEventArrived)
-                {
-                    yield return null;
-                }
+                agent.isStopped = false;
+                isRunning = false;
+                yield break;
+            }
+
+            //상호작용 이벤트 순간까지 대기
+            while (!playerInteractAnimView.IsAnimEventArrived)
+            {
+                yield return null;
             }
         }
-
+        Debug.Log("[AutoInteract]실제 상호작용 들어갑니다 이제");
         //실제 상호작용 실행
         ExecuteInteract(target);
 
         //1회 실행후 타겟 해제
         if (clickMove != null) clickMove.ClearTarget();
-
-        //다음 상호작용 위해 busy 플래그 해제
-        if (playerInteractAnimView != null) playerInteractAnimView.Release();
 
         agent.isStopped = false;
         isRunning = false;

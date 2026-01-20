@@ -16700,7 +16700,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactPoint: {fileID: 118043538}
   interactDistance: 10
-  interactAnimId: 0
+  interactAnimId: 1
 --- !u!65 &652632820
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26810,7 +26810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1048119946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30142,6 +30142,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 431874635}
     m_Modifications:
+    - target: {fileID: 335715110992909045, guid: 26b8166c4f06708408d1d04ab4ee35d8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6258557884557376308, guid: 26b8166c4f06708408d1d04ab4ee35d8,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -30211,6 +30216,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Wall4m (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6742185029309522318, guid: 26b8166c4f06708408d1d04ab4ee35d8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51689,6 +51699,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 431874635}
     m_Modifications:
+    - target: {fileID: 335715110992909045, guid: 26b8166c4f06708408d1d04ab4ee35d8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6258557884557376308, guid: 26b8166c4f06708408d1d04ab4ee35d8,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -51758,6 +51773,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Wall4m (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6742185029309522318, guid: 26b8166c4f06708408d1d04ab4ee35d8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -52012,7 +52032,7 @@ GameObject:
   - component: {fileID: 3457276346514503932}
   - component: {fileID: 3744846647411503765}
   - component: {fileID: 5313377107750439127}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorHandle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55031,7 +55051,7 @@ MonoBehaviour:
   interactTypeName: InteractType
   useAnimationEvent: 1
   maxWaitForAnimationEvent: 1.5
-  FallbackDelay: 0.5
+  FallbackDelay: 1.6
 --- !u!54 &5866666021911040079
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -55040,7 +55060,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149155696770}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -55054,7 +55074,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 116
@@ -55068,7 +55088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6465292270932662411}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BathRoom+
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55704,7 +55724,7 @@ GameObject:
   - component: {fileID: 1081736125836207129}
   - component: {fileID: 5845139166977383221}
   - component: {fileID: 4891680326829127730}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DoorHandle001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
