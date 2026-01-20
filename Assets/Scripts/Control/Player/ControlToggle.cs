@@ -23,10 +23,13 @@ public class ControlToggle : MonoBehaviour
 
     [Header("네비메쉬,컨트롤러 참조")]
     [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private PlayerControl playerControl;
+    [SerializeField] private CharacterController characterController;
 
     [Header("탑뷰 클릭무브 컴포넌트")]
     [SerializeField] private ClickMove clickMove;
+
+    [Header("플레이어 컨트롤 컴포넌트")]    
+    [SerializeField] private PlayerControl playerControl;
 
     //외부 접근용 프로퍼티
     public ControlMode CurMode { get; private set; }
@@ -34,6 +37,7 @@ public class ControlToggle : MonoBehaviour
     private void Awake()
     {
         if (agent == null) agent = GetComponent<NavMeshAgent>();
+        if (characterController == null) characterController = GetComponent<CharacterController>();
         if (playerControl == null) playerControl = GetComponent<PlayerControl>();
         if (clickMove == null) clickMove = GetComponent<ClickMove>();
     }
@@ -61,6 +65,7 @@ public class ControlToggle : MonoBehaviour
     private void EnableTopView()
     {
         playerControl.enabled = false;
+        characterController.enabled = false;
         agent.enabled = true;
         agent.isStopped = false;
         clickMove.enabled = true;
@@ -74,9 +79,10 @@ public class ControlToggle : MonoBehaviour
     private void EnableFPS()
     {
         clickMove.enabled = false;
-        //agent.isStopped = true;
+        agent.isStopped = true;
         agent.enabled = false;
         playerControl.enabled = true;
+        characterController.enabled= true;
 
         Debug.Log("1인칭 모드 활성화-네비메쉬 off/ 컨트롤러 on");
     }
