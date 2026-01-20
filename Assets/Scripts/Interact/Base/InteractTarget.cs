@@ -18,6 +18,11 @@ using UnityEngine;
 ///  
 /// [컴포지트 패턴 사용]
 /// -다중 InteractableBase 제공자의 역할을 하게 될 것
+/// 
+/// [플레이어 연출 추가부분]
+/// -플레이어 애니메이션 해쉬값을 특정 id 로 구분지어서,
+/// -다른 상호작용 애니메이션이 나오게끔 하고 있어서,
+/// -인터랙트 타겟에서 지정을 해주면 편할 거 같아
 /// </summary>
 public class InteractTarget : MonoBehaviour
 {
@@ -27,6 +32,9 @@ public class InteractTarget : MonoBehaviour
     [Header("상호작용 허용거리")]
     [SerializeField] private float interactDistance = 1.0f;
 
+    [Header("플레이어 상호작용 애니메이션 타입 ID")]
+    [SerializeField] private int interactAnimId;
+
     //캐싱된 상호작용 오브젝트 목록
     private readonly List<InteractableBase> interactables = new List<InteractableBase>();
 
@@ -34,6 +42,9 @@ public class InteractTarget : MonoBehaviour
     public Transform InteractPoint { get { return interactPoint; } }
     public float InteractDistance { get { return interactDistance; } }
     public bool HasInteractables { get { return interactables.Count > 0; } }
+
+    //++autoInteract 에서 플레이어 애니 타입 확정할때 참조용
+    public int InteractAnimId { get { return interactAnimId; } }
 
     private void Awake()
     {
