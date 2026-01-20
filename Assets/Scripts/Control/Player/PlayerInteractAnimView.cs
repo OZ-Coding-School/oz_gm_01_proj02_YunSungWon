@@ -49,9 +49,6 @@ public class PlayerInteractAnimView : MonoBehaviour
     //애니 이벤트 타이밍 도착 여부
     private bool isAnimEventArrived;
 
-    //애니 이벤트 끝난 타이밍 도착 여부
-    private bool isAnimEndArrived;
-
     //애니 타임아웃 처리 코루틴
     private Coroutine waitCoroutin;
 
@@ -81,13 +78,11 @@ public class PlayerInteractAnimView : MonoBehaviour
 
         isBusy = true;
         isAnimEventArrived = false;
-        isAnimEndArrived = false;
 
         //애니메이터 없으면, 애니 이벤트 즉시 도착 처리로 알림
         if (animator == null)
         {
             isAnimEventArrived = true;
-            isAnimEndArrived = true;
             isBusy = false;
             return true;
         }
@@ -122,7 +117,6 @@ public class PlayerInteractAnimView : MonoBehaviour
     public void OnAutoInteractAnimationEnd()
     {
         Debug.Log("[AnimView] 이벤트 엔드 호출됨");
-        isAnimEndArrived = true;
         Release();
     }
 
