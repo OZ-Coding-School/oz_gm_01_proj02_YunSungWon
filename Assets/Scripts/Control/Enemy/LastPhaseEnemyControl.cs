@@ -59,9 +59,9 @@ public class LastPhaseEnemyControl : MonoBehaviour
 
         //잡힘(킬) 판정 플레이어 기준
         float playerDist = Vector3.Distance(transform.position, playerTransform.position);
-        if (playerDist <= killdistance)
-        {
-            endingDirector.RollbackTocheckPoint("라스트 페이즈때 변이괴한에게 잡힘");
-        }
+        //if (playerDist <= killdistance)
+        //{
+        //    endingDirector.RollbackTocheckPoint("라스트 페이즈때 변이괴한에게 잡힘");
+        //}
     }
 }

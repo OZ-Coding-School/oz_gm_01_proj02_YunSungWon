@@ -11320,6 +11320,58 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0.105000004, y: 1.8460001, z: 0.003}
   m_TimeToStationary: 0.5
+--- !u!1 &701533464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 701533466}
+  - component: {fileID: 701533465}
+  m_Layer: 0
+  m_Name: Catch_Director
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &701533465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 701533464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48be2ead1755014cb305ae20744bb94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAnimator: {fileID: 5866666021911040066}
+  playerCaughtTriggerName: Caught
+  enemyCatchTriggerName: Catch
+  clickMove: {fileID: 5866666021911040070}
+  playerControl: {fileID: 5866666021911040072}
+  snapDistance: 1
+  holdSeconds: 2
+  blockIfBusy: 1
+--- !u!4 &701533466
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 701533464}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 888639997}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &701564958 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 335715110992909045, guid: 26b8166c4f06708408d1d04ab4ee35d8,
@@ -15365,6 +15417,7 @@ Transform:
   - {fileID: 804087562}
   - {fileID: 975299369}
   - {fileID: 1200856567}
+  - {fileID: 701533466}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &888681262
@@ -17763,7 +17816,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1048119946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29864,7 +29917,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loopManager: {fileID: 1896098353}
   playerTransform: {fileID: 543450653698116152}
-  enemyPrefab: {fileID: 6782946148405343278, guid: 47929534b5a1fd145a644d8a052dc16e,
+  enemyPrefab: {fileID: 1028826790918981565, guid: 47929534b5a1fd145a644d8a052dc16e,
     type: 3}
   enemySpawnPoint: {fileID: 1297157134}
   frontDoorControl: {fileID: 386039133}

@@ -570,10 +570,10 @@ public class EnemyControl : MonoBehaviour
                     EndingDirector.Instance.RollbackTocheckPoint("괴한에게 잡힘(라스트페이즈중)");
                 }
                 //초반 페이즈용
-                if (loopManager != null)
-                {
-                    loopManager.ResetLoop("괴한에게 살해당함(시야기반 탐색중-연출없어서 바로 킬(임시)");
-                }
+                //if (loopManager != null)
+                //{
+                //    loopManager.ResetLoop("괴한에게 살해당함(시야기반 탐색중-연출없어서 바로 킬(임시)");
+                //}
             }
         }
     }
