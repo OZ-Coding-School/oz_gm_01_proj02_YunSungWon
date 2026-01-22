@@ -25,21 +25,28 @@ public class CatchDirector : MonoBehaviour
     [Header("FPS 입력 컨트롤")]
     [SerializeField] private PlayerControl playerControl;
 
+    //잡힘 처리 시 롤백 호출용 참조
+    //이거 지금 라스트 페이즈에너미 컨트롤쪽에서 임시로 킬 처리 하고 있는거
+    //제발 제발 잊지마 -리셋 루프도 마찬가지로 루프매니저->에너미 컨트롤쪽 리셋루프
+    [Header("루프리셋, 롤백 담당 참조")]
+    [SerializeField] private LoopManager loopManager;
+    [SerializeField] private EndingDirector endingDirector;
+
     [Header("연출 파라미터")]
+    [Header("잡히는 거리")]
     [SerializeField] private float snapDistance = 0.9f;
+    [Header("잡힘 애니 보여줄 시간")]
     [SerializeField] private float holdSeconds = 1.2f;
 
     [Header("중복 실행 방지")]
     [SerializeField] private bool blockIfBusy = true;
 
+    [Header("잡혔을때 연출용 볼룸FX 참조")]
+    [SerializeField] private CatchGlitchVolumeFX volumeFX;
+
     private bool isRunning;
     private int playerCaughtHash;
     private int enemyCatchHash;
-
-    //잡힘 처리 시 롤백 호출용(EndingDirector)
-    //이거 지금 라스트 페이즈에너미 컨트롤쪽에서 임시로 킬 처리 하고 있는거
-    //제발 제발 잊지마 -리셋 루프도 마찬가지로 루프매니저->에너미 컨트롤쪽 리셋루프
-    private EndingDirector endingDirector; 
 
     private void Awake()
     {
@@ -68,6 +75,9 @@ public class CatchDirector : MonoBehaviour
         //연출용 위치 스냅
         SnapEnemyToPlayer(enemyInfo.transform, player.transform);
 
+        //볼룸FX 연출 시작
+        volumeFX.PlayStart();
+
         //애니메이션 재생
         PlayCatchAnimations(enemyInfo);
 
@@ -77,12 +87,15 @@ public class CatchDirector : MonoBehaviour
         //결과 분기점
         if (enemyInfo.Type == EnemyCatchInfo.CatchType.Loop)
         {
-            LoopManager.Instance.ResetLoop("[CatchDirector] 기존루프 괴한에게 잡힘 -> 리셋 루프");
+            loopManager.ResetLoop("[CatchDirector] 기존루프 괴한에게 잡힘 -> 리셋 루프");
         }
         else
         {
             endingDirector.RollbackTocheckPoint("[CatchDirector] 라스트페이즈 괴한에게 잡힙 -> 롤백 루프");
         }
+        
+        //볼룸 FX 연출 끝
+        volumeFX.PlayEnd();
 
         //플레이어 입력 복구
         UnlockInput(enemyInfo.Type);

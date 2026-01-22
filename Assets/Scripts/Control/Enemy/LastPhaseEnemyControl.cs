@@ -14,8 +14,10 @@ public class LastPhaseEnemyControl : MonoBehaviour
     [Header("추격 갱신 간격")]
     [SerializeField] private float chaseUpdateInterval = 0.5f;
 
-    [Header("잡힘(롤백) 판정 거리")]
-    [SerializeField] private float killdistance = 1.0f;
+    //여기 이제 거리로 안잡고, 트리거로 작동하게 함 
+    //혹시 몰라서 일단 주석처리
+    //[Header("잡힘(롤백) 판정 거리")]
+    //[SerializeField] private float killdistance = 1.0f;
 
     //NavMesh 이동 담당
     private NavMeshAgent agent;
