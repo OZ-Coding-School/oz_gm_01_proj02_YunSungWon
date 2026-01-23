@@ -17,6 +17,8 @@ public class UICloseButton : MonoBehaviour
     {
         if (UIManager.Instance == null) return;
 
+        SoundManager.Instance.PlaySfxByName("CloseButton_SFX");
+
         UIManager.Instance.CloseCurPanel(reason);
     }
 }

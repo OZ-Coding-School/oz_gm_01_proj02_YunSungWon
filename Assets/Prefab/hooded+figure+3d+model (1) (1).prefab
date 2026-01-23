@@ -1851,6 +1851,7 @@ GameObject:
   - component: {fileID: 6477996297858160044}
   - component: {fileID: 1607122388972569307}
   - component: {fileID: 3134463227310744964}
+  - component: {fileID: 4698434587527719572}
   m_Layer: 0
   m_Name: hooded+figure+3d+model (1) (1)
   m_TagString: Untagged
@@ -1941,7 +1942,7 @@ MonoBehaviour:
   sofaWatchPoint: {fileID: 0}
   kitchenEntryPoint: {fileID: 0}
   arriveDistance: 1
-  entranceDelay: 2
+  entranceDelay: 3
   entranceText: "\uC774 \uBAB8 \uB4F1\uC7A5."
   keySearchDuration: 10
   waitInBathDuration: 10
@@ -2025,6 +2026,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   catchType: 0
   enemyAnimator: {fileID: 4589916843676763780}
+--- !u!114 &4698434587527719572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8064254157135596962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3b34ecb670654c4bbc5c662282085d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8091286370203295679
 GameObject:
   m_ObjectHideFlags: 0

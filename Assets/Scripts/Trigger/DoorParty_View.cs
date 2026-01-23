@@ -55,7 +55,7 @@ public class DoorParty_View : MonoBehaviour
             StopCoroutine(rotateRoutine);
             rotateRoutine = null;
         }
-
+        SoundManager.Instance.PlaySfxByName("DoorBreak_SFX");
         rotateRoutine = StartCoroutine(RoTateToYawCo(openYaw));
     }
 
@@ -72,7 +72,6 @@ public class DoorParty_View : MonoBehaviour
         float startYaw = startEuler.y;
 
         float deltaYaw = Mathf.DeltaAngle(startYaw, targetYaw);
-
         while (time < rotateDuration)
         {
             time += Time.deltaTime;

@@ -80,6 +80,11 @@ public class PhoneUIPanel : UIActionPanelBase
     //중복방지용 통화 진행 코루틴
     private Coroutine callRoutine;
 
+    private void OnEnable()
+    {
+        SoundManager.Instance.PlaySfxByName("getPhone_SFX");
+    }
+
     protected override void OnOpenActionPanel(InteractContext context)
     {
         if (PerceptionManager.Instance != null)
@@ -148,6 +153,8 @@ public class PhoneUIPanel : UIActionPanelBase
     /// <param name="digit"></param>
     public void OnClickDigit(string digit)
     {
+        SoundManager.Instance.PlaySfxByName("PhoneKeypad_SFX");
+
         if (string.IsNullOrEmpty(digit)) return;
 
         if (curState == PhoneState.Locked) passwordBuffer += digit;
@@ -162,6 +169,8 @@ public class PhoneUIPanel : UIActionPanelBase
     /// </summary>
     private void OnClickBackSpace()
     {
+        SoundManager.Instance.PlaySfxByName("PhoneKeypad_SFX");
+
         if (curState == PhoneState.Locked)
         {
             passwordBuffer = RemoveLastChar(passwordBuffer);
@@ -183,6 +192,8 @@ public class PhoneUIPanel : UIActionPanelBase
 
         if (passwordBuffer == corrcetPassword)
         {
+            SoundManager.Instance.PlaySfxByName("PhoneKeypad_SFX");
+
             dialBuffer = string.Empty;
             SetState(PhoneState.Dialing, "비밀번호 정답 : 다이얼화면으로 진입");
             RefreshUI();
@@ -190,6 +201,7 @@ public class PhoneUIPanel : UIActionPanelBase
         }
 
         messageText.text = "비밀번호가 틀린 것 같다.";
+        SoundManager.Instance.PlaySfxByName("ErrorAlert_SFX");
         passwordBuffer = string.Empty;
         RefreshUI();
     }
@@ -201,9 +213,12 @@ public class PhoneUIPanel : UIActionPanelBase
     {
         if (curState != PhoneState.Dialing) return;
 
+        SoundManager.Instance.PlaySfxByName("PhoneKeypad_SFX");
+
         if (dialBuffer != emergencyNumber)
         {
             messageText.text = "이 번호가 아닌거 같은데..";
+            SoundManager.Instance.PlaySfxByName("PhoneFail_SFX");
             RefreshUI();
             return;
         }
@@ -224,6 +239,7 @@ public class PhoneUIPanel : UIActionPanelBase
 
         //통화 연출 시작
         SetState(PhoneState.Calling, "112 통화 시작");
+        SoundManager.Instance.PlaySfxByName("PhoneLing_SFX");
         RefreshUI();
 
         //자꾸 여기서 null터짐 이유 분명히 해야함
@@ -250,6 +266,8 @@ public class PhoneUIPanel : UIActionPanelBase
         {
             messageText.text = "내집에서 나가"; //신고성공 기준 엔딩들어갈거라서
             SetState(PhoneState.Result, "신고 성공 : 주소 단서 보유");
+
+            SoundManager.Instance.StopBgm();
 
             //엔딩 진입 트리거
             if (EndingDirector.Instance != null)

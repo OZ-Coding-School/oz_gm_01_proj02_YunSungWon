@@ -2661,6 +2661,7 @@ GameObject:
   - component: {fileID: 6683693711999155349}
   - component: {fileID: 8312360558349114304}
   - component: {fileID: 4848819958758549735}
+  - component: {fileID: -89817712138992891}
   m_Layer: 0
   m_Name: demonic+creature+3d+model (1)
   m_TagString: Untagged
@@ -2823,6 +2824,18 @@ MonoBehaviour:
   navMeshAgent: {fileID: 923950337627255096}
   speedDampTime: 0.1
   speedEpsilon: 0.01
+--- !u!114 &-89817712138992891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059550378433541266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3b34ecb670654c4bbc5c662282085d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9156417722779821288
 GameObject:
   m_ObjectHideFlags: 0

@@ -255,6 +255,7 @@ public class EndingDirector : MonoBehaviour
     /// </summary>
     private void SpawnLastPhaseEnemy()
     {
+        SoundManager.Instance.PlayBgmByName("LastPhase_BGM");
         if (lastPhaseEnemyPrefab == null || lastPhaseEnemySpawnPoint == null)
         {
             Debug.Log("[EndingDirector] lastPhaseEnemyPrefab / spawnPoint 둘중 하나 null");
@@ -294,6 +295,7 @@ public class EndingDirector : MonoBehaviour
     /// <param name="reason"></param>
     public void RollbackTocheckPoint(string reason)
     {
+        SoundManager.Instance.StopBgm();
         if (!IsEnding) return;
 
         Debug.Log("[EndingDirector] 엔딩 롤백 시작 : " + reason);
@@ -400,6 +402,7 @@ public class EndingDirector : MonoBehaviour
 
         //타임라인 재생
         endingPlayableDirector.time = 0.0f;
+        SoundManager.Instance.StopBgm();
         endingPlayableDirector.Play();
     }
 

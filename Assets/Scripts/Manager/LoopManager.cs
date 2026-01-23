@@ -216,6 +216,8 @@ public class LoopManager : MonoBehaviour
     /// </summary>
     private void StartNewLoop()
     {
+        if (loopCount == 0) SoundManager.Instance.PlayBgmByName("RoomLoop_BGM");
+
         loopCount += 1;
         //시간 초기화
         elapsedSeconds = 0.0f;
@@ -254,8 +256,8 @@ public class LoopManager : MonoBehaviour
         }
 
         if (isResetting) return;
-
         StartCoroutine(LoopResetCo(reason));
+        SoundManager.Instance.StopSfx();
     }
 
     /// <summary>

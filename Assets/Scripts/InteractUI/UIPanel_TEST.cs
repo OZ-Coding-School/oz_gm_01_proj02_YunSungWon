@@ -13,6 +13,15 @@ public class UIPanel_TEST : UIPanelBase
     [Header("패널 이름-디버그 확인용")]
     [SerializeField] private string panelName = "더미패널";
 
+    //사운드 관련
+    private void OnEnable()
+    {
+        if (panelName == "달력") SoundManager.Instance.PlaySfxByName("CalendarInteract_SFX");
+        if (panelName == "박스") SoundManager.Instance.PlaySfxByName("BoxInteract_SFX");
+        if (panelName == "노트") SoundManager.Instance.PlaySfxByName("Recipt_SFX");
+        if (panelName == "그림") SoundManager.Instance.PlaySfxByName("getPhone_SFX");
+    }
+
     protected override void OnOpen(InteractContext context)
     {
         Debug.Log("[UIPanel_TEST] 패널open" + panelName + "열린이유=" +context.Reason);

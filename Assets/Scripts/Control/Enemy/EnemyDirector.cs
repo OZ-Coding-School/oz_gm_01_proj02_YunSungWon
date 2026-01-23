@@ -121,7 +121,7 @@ public class EnemyDirector : MonoBehaviour
     private void OnBreakInFailedByBattery(float emergencyTimeSeconds)
     {
         if (isLoopEnemyBlocked) return;
-
+        SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
         Debug.Log("[EnemyDirector] 괴한 대사 : 뭐야? 배터리 다 됐어? 미치겠네..");
     }
 
@@ -190,8 +190,10 @@ public class EnemyDirector : MonoBehaviour
                 frontDoorControl.EnemyTryUnlock("도어락 침입");
             }
 
+            SoundManager.Instance.PlaySfxByName("DoorLockPW_SFX");
             //문 여는 템포
             if (doorOpenDelay > 0.0f) yield return new WaitForSeconds(doorOpenDelay);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
 
             frontDoorControl.EnemyTryOpenDoor("도어락 침입");
             yield break;
@@ -207,7 +209,9 @@ public class EnemyDirector : MonoBehaviour
                 frontDoorControl.EnemyTryUnlock("비상키 침입");
             }
 
+            SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
             if(doorOpenDelay>0.0f) yield return new WaitForSeconds(doorOpenDelay);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
 
             frontDoorControl.EnemyTryOpenDoor("비상키 침입");
         }

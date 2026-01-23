@@ -80,6 +80,18 @@ public class CatchDirector : MonoBehaviour
 
         //애니메이션 재생
         PlayCatchAnimations(enemyInfo);
+        if (enemyInfo.Type == EnemyCatchInfo.CatchType.Loop)
+        {
+            SoundManager.Instance.PlaySfxByName("EnemyKnife_SFX");
+            SoundManager.Instance.PlaySfxByName("PlayerBleeding_SFX");
+            SoundManager.Instance.PlaySfxByName("PlayerPain_SFX");
+        }
+        else
+        {
+            SoundManager.Instance.PlaySfxByName("MonsterAtk_SFX");
+            SoundManager.Instance.PlaySfxByName("PlayerBleeding_SFX");
+            SoundManager.Instance.PlaySfxByName("PlayerHardPain_SFX");
+        }
 
         //잠시 유지 (카메라/사운드 연출 구간) ====!!====
         yield return new WaitForSeconds(holdSeconds);
@@ -88,10 +100,14 @@ public class CatchDirector : MonoBehaviour
         if (enemyInfo.Type == EnemyCatchInfo.CatchType.Loop)
         {
             loopManager.ResetLoop("[CatchDirector] 기존루프 괴한에게 잡힘 -> 리셋 루프");
+            SoundManager.Instance.StopSfx();
+            SoundManager.Instance.PlaySfxByName("BreathOut_SFX");
         }
         else
         {
             endingDirector.RollbackTocheckPoint("[CatchDirector] 라스트페이즈 괴한에게 잡힙 -> 롤백 루프");
+            SoundManager.Instance.StopSfx();
+            SoundManager.Instance.PlaySfxByName("HardBreathOut_SFX");
         }
         
         //볼룸 FX 연출 끝

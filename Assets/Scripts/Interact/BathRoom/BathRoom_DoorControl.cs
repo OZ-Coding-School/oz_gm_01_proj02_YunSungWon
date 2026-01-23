@@ -102,18 +102,21 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         if (doorState == BathDoorState.Locked)
         {
             Debug.Log("[BathRommDoor] 문 클릭 : Locked 상태(잠겨있는 취급/상호작용 불가)");
+            SoundManager.Instance.PlaySfxByName("ErrorAlert_SFX");
             return;
         }
 
         if (doorState == BathDoorState.Open)
         {
             SetState(BathDoorState.Closed, "문 클릭 : Open->Closed", BathDoorTransitionMode.Animated);
+            SoundManager.Instance.PlaySfxByName("DoorClose_SFX");
             return;
         }
 
         if (doorState == BathDoorState.Closed)
         {
             SetState(BathDoorState.Open, "문 클릭 : Closed->Open", BathDoorTransitionMode.Animated);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
             return;
         }
     }
@@ -136,18 +139,21 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         if (doorState == BathDoorState.Open)
         {
             Debug.Log("[BathRommDoor] 문고리 클릭 : Open 상태(문 먼저 닫아야함)");
+            SoundManager.Instance.PlaySfxByName("ErrorAlert_SFX");
             return;
         }
 
         if (doorState == BathDoorState.Closed)
         {
             SetState(BathDoorState.Locked, "문고리 클릭 : Closed ->  Locked", BathDoorTransitionMode.Animated);
+            SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
             return;
         }
 
         if (doorState == BathDoorState.Locked)
         {
             SetState(BathDoorState.Closed, "문고리 클릭 : Locked -> Closed", BathDoorTransitionMode.Animated);
+            SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
             return;
         }
     }
@@ -170,6 +176,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         if (doorState == BathDoorState.Closed)
         {
             SetState(BathDoorState.Open, "괴한이 문을 : Close->Open", BathDoorTransitionMode.Animated);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
             return true;
         }
 
@@ -186,6 +193,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
         if (doorState != BathDoorState.Locked) return false;
 
         SetState(BathDoorState.Closed, "괴한이 문을 : Locked->Closed(Unlock)", BathDoorTransitionMode.Animated);
+        SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
         return true;
     }
 
@@ -196,6 +204,7 @@ public class BathRoom_DoorControl : MonoBehaviour, IResetTable
     public void EnemyForceBreak()
     {
         if (doorState == BathDoorState.Broken) return;
+        SoundManager.Instance.PlaySfxByName("DoorBreak_SFX");
         SetState(BathDoorState.Broken, "괴한이 문을 부숴버림", BathDoorTransitionMode.Animated);
     }
     //=================================================================//

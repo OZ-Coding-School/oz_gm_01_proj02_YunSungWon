@@ -88,6 +88,7 @@ public class FrontDoorControl : MonoBehaviour,IResetTable
         if (doorState == FrontDoorState.Closed)
         {
             SetState(FrontDoorState.Open, "문 클릭 : Closed->Open", FrontDoorTransitionMode.Animated);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
             return;
         }
     }
@@ -137,6 +138,7 @@ public class FrontDoorControl : MonoBehaviour,IResetTable
     public void EnemyForceBreak(string reason)
     {
         if (doorState == FrontDoorState.Broken) return;
+        SoundManager.Instance.PlaySfxByName("DoorBreak_SFX");
         SetState(FrontDoorState.Broken, "괴한이 문을 부숴버림", FrontDoorTransitionMode.Animated);
     }
     //=================================================================//

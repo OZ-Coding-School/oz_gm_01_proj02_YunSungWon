@@ -35,7 +35,6 @@ public class EnemyCatchTrigger : MonoBehaviour
 
         //플레이어 아니면 무시
         if (!other.CompareTag("Player")) return;
-
         hasFired = true;
         catchDirector.BeginCatch(catchInfo, other.gameObject);
     }
