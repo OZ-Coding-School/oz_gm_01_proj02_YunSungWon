@@ -228,18 +228,17 @@ public class EndingDirector : MonoBehaviour
     private IEnumerator LastPhaseSequenceCo(string reason)
     {
         Debug.Log("[EndingDirector] 라스트페이즈 시퀀스 시작 :"+reason);
-
+        SoundManager.Instance.PlaySfxByName("CinematicImpact_SFX");
         if (breakDoorDelay > 0.0f)
         {
             yield return new WaitForSeconds(breakDoorDelay);
         }
-
         //현관문 파괴부분
         if (frontDoorControl != null)
         {
             frontDoorControl.EnemyForceBreak("라스트페이즈 : 현관문 파괴됨");
         }
-
+        
         if (spawnEnemyDelayAfterBreak > 0.0f)
         {
             yield return new WaitForSeconds(spawnEnemyDelayAfterBreak);

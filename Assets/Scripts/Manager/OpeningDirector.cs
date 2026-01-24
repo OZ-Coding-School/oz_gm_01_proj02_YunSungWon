@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Playables;
 
 
@@ -15,6 +16,9 @@ public class OpeningDirector : MonoBehaviour
 
     [Header("오프닝 타임라인")]
     [SerializeField] private PlayableDirector openingPlayableDirector;
+
+    [Header("플레이어 입력 잠금용 인풋게이트 참조")]
+    [SerializeField] PlayerInputGate inputGate;
 
     private bool isOpeningPlaying;
 
@@ -62,7 +66,7 @@ public class OpeningDirector : MonoBehaviour
 
         Debug.Log("[OpeningDirector] 오프닝 타임라인 시작됨 " + reason);
 
-        //오프닝 중 입력잠금->마우스 커서만 숨기는걸로 변경
+        //오프닝 중 입력잠금
         SetControlLocked(true);
 
         //플레이어블 디렉터 인스펙터에서 어웨이크 자동 재생 하거나, 여기서 코드로 제어
@@ -78,7 +82,7 @@ public class OpeningDirector : MonoBehaviour
 
         isOpeningPlaying = false;
 
-        //입력잠금 해제->마우스 커서만 해제로 변경
+        //입력잠금 해제
         SetControlLocked(false);
 
         StartLoopImmediately("오프닝 종료 게임루프 시작");
@@ -99,22 +103,13 @@ public class OpeningDirector : MonoBehaviour
 
     private void SetControlLocked(bool locked)
     {
-        //여기에 클릭무브,플레이어 컨트롤 넣어서 잠궈버리니까,
-        //루프매니저에서 처음 시작할때,턉뷰모드로 들어가고, 컨트롤 토글할때,
-        //거기서 토글하는거랑 맞부딪혀서 컨트롤 그냥 터져버림
-        //연출 중일때는 플레이어 캐릭터 아예 안보일거니까,
-        //그냥 여기서 관련 컨트롤 잠그는건 빼기로
-
-        //연출중이니까 마우스 커서는 숨기는쪽으로
         if (locked)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            inputGate.SetGameplayInputEnabeld(false);
         }
         else
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            inputGate.SetGameplayInputEnabeld(true);
         }
     }
 }

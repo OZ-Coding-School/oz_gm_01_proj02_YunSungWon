@@ -31,6 +31,12 @@ public class ControlToggle : MonoBehaviour
     [Header("플레이어 컨트롤 컴포넌트")]    
     [SerializeField] private PlayerControl playerControl;
 
+    [Header("플레이어 인풋게이트(최종 입력 허용/차단)")]
+    [SerializeField] private PlayerInputGate playerInputGate;
+
+    [Header("플레이어 콜라이더")]
+    [SerializeField] private Collider playerCollider;
+
     //외부 접근용 프로퍼티
     public ControlMode CurMode { get; private set; }
 
@@ -40,6 +46,8 @@ public class ControlToggle : MonoBehaviour
         if (characterController == null) characterController = GetComponent<CharacterController>();
         if (playerControl == null) playerControl = GetComponent<PlayerControl>();
         if (clickMove == null) clickMove = GetComponent<ClickMove>();
+        if (playerInputGate == null) playerInputGate = GetComponent<PlayerInputGate>();
+        if (playerCollider == null) playerCollider = GetComponent<Collider>();
     }
 
     private void Start()
@@ -60,6 +68,15 @@ public class ControlToggle : MonoBehaviour
     }
 
     /// <summary>
+    /// 현재 인풋게이트 상태 확인
+    /// </summary>
+    private bool IsGamePlayInputEnabled()
+    {
+        if (playerInputGate == null) return true;
+        return playerInputGate.IsGameplayInputEnabled;
+    }
+
+    /// <summary>
     /// 탑뷰 활성화 될땐 컨트롤러 off, 네비메쉬만 on
     /// </summary>
     private void EnableTopView()
@@ -68,7 +85,7 @@ public class ControlToggle : MonoBehaviour
         characterController.enabled = false;
         agent.enabled = true;
         agent.isStopped = false;
-        clickMove.enabled = true;
+        clickMove.enabled = IsGamePlayInputEnabled();
 
         Debug.Log("탑뷰 모드 활성화-컨트롤러 off/ 네비메쉬 on");
     }
@@ -81,8 +98,9 @@ public class ControlToggle : MonoBehaviour
         clickMove.enabled = false;
         agent.isStopped = true;
         agent.enabled = false;
-        playerControl.enabled = true;
+        playerControl.enabled = IsGamePlayInputEnabled();
         characterController.enabled= true;
+        playerCollider.enabled = false;
 
         Debug.Log("1인칭 모드 활성화-네비메쉬 off/ 컨트롤러 on");
     }

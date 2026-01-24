@@ -83,6 +83,7 @@ public class PhoneUIPanel : UIActionPanelBase
     private void OnEnable()
     {
         SoundManager.Instance.PlaySfxByName("getPhone_SFX");
+        messageText.text = null;
     }
 
     protected override void OnOpenActionPanel(InteractContext context)
@@ -196,6 +197,7 @@ public class PhoneUIPanel : UIActionPanelBase
 
             dialBuffer = string.Empty;
             SetState(PhoneState.Dialing, "비밀번호 정답 : 다이얼화면으로 진입");
+            SoundManager.Instance.PlaySfxByName("SuccessAlert_SFX");
             RefreshUI();
             return;
         }
@@ -266,8 +268,9 @@ public class PhoneUIPanel : UIActionPanelBase
         {
             messageText.text = "내집에서 나가"; //신고성공 기준 엔딩들어갈거라서
             SetState(PhoneState.Result, "신고 성공 : 주소 단서 보유");
-
+            SoundManager.Instance.StopSfx();
             SoundManager.Instance.StopBgm();
+            SoundManager.Instance.PlaySfxByName("CinematicSlow_SFX");
 
             //엔딩 진입 트리거
             if (EndingDirector.Instance != null)
@@ -277,6 +280,7 @@ public class PhoneUIPanel : UIActionPanelBase
         }
         else
         {
+            SoundManager.Instance.PlaySfxByName("ErrorAlert_SFX");
             messageText.text = "우리집 주소가 뭐였지..?";
             SetState(PhoneState.Result, "신고 실패 : 주소 단서 없음");
         }
@@ -385,7 +389,7 @@ public class PhoneUIPanel : UIActionPanelBase
             return "통화중";
         }
 
-        return "대충 심한말-테스트단계 검열";
+        return "---";
     }
 
     /// <summary>

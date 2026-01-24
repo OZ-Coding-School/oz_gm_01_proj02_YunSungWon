@@ -21,9 +21,6 @@ public class PlayerInputGate : MonoBehaviour
     [Header("PlayerInteractor 컴포넌트")]
     [SerializeField] private PlayerInteractor playerInteractor;
 
-    //[Header("PlayerControl 컴포넌트")]
-    //[SerializeField] private PlayerControl playerControl;
-
     [Header("플레이어 NavMesh 컴포넌트")]
     [SerializeField] private NavMeshAgent navMeshAgent;
 
@@ -35,7 +32,6 @@ public class PlayerInputGate : MonoBehaviour
         clickMove = GetComponent<ClickMove>();
         autoInteract = GetComponent<AutoInteract>();
         playerInteractor = GetComponent<PlayerInteractor>();
-        //playerControl = GetComponent<PlayerControl>();
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
