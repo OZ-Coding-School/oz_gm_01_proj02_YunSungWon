@@ -57518,8 +57518,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyePivot: {fileID: 718280562}
-  sensitivityX: 400
-  sensitivityY: 400
+  sensitivityX: 100
+  sensitivityY: 100
   minPitch: -70
   maxPitch: 70
   moveSpeed: 10
