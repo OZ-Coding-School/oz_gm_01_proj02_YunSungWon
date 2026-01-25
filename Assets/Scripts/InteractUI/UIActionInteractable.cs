@@ -21,7 +21,6 @@ public class UIActionInteractable : InteractableBase
     {
         if (UIManager.Instance == null)
         {
-            Debug.Log("[UIViewInteractable] UIManager.Instance °¡ null ³µÀ½");
             return;
         }
 

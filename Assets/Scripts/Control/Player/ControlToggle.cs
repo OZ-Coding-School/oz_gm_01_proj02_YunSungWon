@@ -86,8 +86,6 @@ public class ControlToggle : MonoBehaviour
         agent.enabled = true;
         agent.isStopped = false;
         clickMove.enabled = IsGamePlayInputEnabled();
-
-        Debug.Log("탑뷰 모드 활성화-컨트롤러 off/ 네비메쉬 on");
     }
 
     /// <summary>
@@ -101,7 +99,5 @@ public class ControlToggle : MonoBehaviour
         playerControl.enabled = IsGamePlayInputEnabled();
         characterController.enabled= true;
         playerCollider.enabled = false;
-
-        Debug.Log("1인칭 모드 활성화-네비메쉬 off/ 컨트롤러 on");
     }
 }

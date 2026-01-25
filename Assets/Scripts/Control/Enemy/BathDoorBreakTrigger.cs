@@ -25,16 +25,12 @@ public class BathDoorBreakTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("[BathDoorBreakTrigger] 도어 컨트롤은 null 체크 전");
 
         if (doorControl == null) return;
-
-        Debug.Log("[BathDoorBreakTrigger] 도어 컨트롤은 null 아님");
 
         //라스트 페이즈 괴한만 문 부수기 가능
         if (other.CompareTag(lastPhaseEnemyTag))
         {
-            Debug.Log("[BathDoorBreakTrigger] 라스트페이즈 태그도 정상적으로 들어옴");
 
             //닫힘, 잠금 상태에만 파괴가능
             bool isBlocked = doorControl.CurState == BathRoom_DoorControl.BathDoorState.Closed ||
@@ -43,7 +39,6 @@ public class BathDoorBreakTrigger : MonoBehaviour
             if (!isBlocked) return;
 
             doorControl.EnemyForceBreak();
-            Debug.Log("[BathDoorBreakTrigger] 에너미 포스브레이크 발동함");
         }
     }
 }

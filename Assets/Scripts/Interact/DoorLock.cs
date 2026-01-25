@@ -43,7 +43,6 @@ public class DoorLock : InteractableBase, IResetTable
     {
         if (isRemoved)
         {
-            Debug.Log("[배터리] 이미 제거됨");
             SoundManager.Instance.PlaySfxByName("ErrorAlert_SFX");
             return;
         }
@@ -55,8 +54,6 @@ public class DoorLock : InteractableBase, IResetTable
         batteryVisual.SetActive(false);
 
         SoundManager.Instance.PlaySfxByName("RemoveBattery_SFX");
-
-        Debug.Log("[배터리] 제거 완료");
     }
 
     /// <summary>
@@ -66,7 +63,6 @@ public class DoorLock : InteractableBase, IResetTable
     public void ResetState()
     {
         RestoreBatteryState();
-        Debug.Log("[DoorLock] ResetState: 배터리 상태 초기화");
     }
 
     /// <summary>

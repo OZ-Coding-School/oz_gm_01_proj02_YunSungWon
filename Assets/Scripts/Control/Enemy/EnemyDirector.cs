@@ -104,8 +104,6 @@ public class EnemyDirector : MonoBehaviour
     /// <param name="method"></param>
     private void OnBreakInSucceeded(LoopManager.BreakInMethod method)
     {
-        Debug.Log("[EnemyDirector] 침입 성공 이벤트 수신" + method);
-
         if (isLoopEnemyBlocked) return;
 
         if (curEnemy != null) return;
@@ -122,7 +120,6 @@ public class EnemyDirector : MonoBehaviour
     {
         if (isLoopEnemyBlocked) return;
         SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
-        Debug.Log("[EnemyDirector] 괴한 대사 : 뭐야? 배터리 다 됐어? 미치겠네..");
     }
 
     /// <summary>
@@ -134,7 +131,6 @@ public class EnemyDirector : MonoBehaviour
     {
         if (enemyPrefab == null || enemySpawnPoint == null)
         {
-            Debug.Log("[EnemyDirector] enemyPrefab / enemySpawnPoint 둘중 null ");
             return;
         }
 
@@ -170,7 +166,6 @@ public class EnemyDirector : MonoBehaviour
     {
         if (frontDoorControl == null)
         {
-            Debug.Log("[EnemyDirector] frontDoorControl가 null 문연출없이 진행");
             yield break;
         }
 
@@ -233,7 +228,6 @@ public class EnemyDirector : MonoBehaviour
     /// <param name="reason"></param>
     public void ForceDespawnEnemy(string reason)
     {
-        Debug.Log("[EnemyDirector] ForceDespawnEnemy 호출됨 : " + reason);
         DeSpawnEnemy();
     }
 
@@ -245,7 +239,6 @@ public class EnemyDirector : MonoBehaviour
     public void SetLoopEnemyBlocked(bool blocked, string reason)
     {
         isLoopEnemyBlocked = blocked;
-        Debug.Log("[EnemyDirector] SetLoopEnemyBlocked 호출됨 : " + blocked + "==" + reason);
 
         if (blocked)
         {

@@ -197,7 +197,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (state == EnemyState.Chasing) return;
 
-        Debug.Log("[EnemyControl] 플레이어 발견->> 바로 추격함");
         ChangeState(EnemyState.Chasing, "플레이어 시야안에 있음");
     }
 
@@ -220,8 +219,6 @@ public class EnemyControl : MonoBehaviour
 
         EnemyState oldState = state;
         state = newState;
-
-        Debug.Log("[EnemyControl] state변경 : " + oldState + "->" + newState + "/변경이유 = " + reason);
 
         //상태별 루틴 시작
         if (state == EnemyState.Entrance) stateRoutine = StartCoroutine(StateEntranceCo());
@@ -254,8 +251,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (agent != null) agent.isStopped = true;
 
-        Debug.Log("[EnemyControl] (임시) 등장 대사 : " + entranceText);
-
         yield return new WaitForSeconds(entranceDelay);
 
         if (agent != null) agent.isStopped = false;
@@ -280,7 +275,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (bathRoomDoorPoint == null)
         {
-            Debug.Log("[EnemyControl] bathRoomDoorPoint가 null. 화장실 탐색 시나리오 박살남");
             yield break;
         }
         
@@ -296,7 +290,6 @@ public class EnemyControl : MonoBehaviour
         //문 상태 기반 분기점
         if (bathRoomDoor.CurState == BathRoom_DoorControl.BathDoorState.Locked)
         {
-            Debug.Log("[EnemyControl] 화장실 문 잠김상태->부엌 열쇠탐색 이동");
             ChangeState(EnemyState.KitchenSearchKey, "화장실 잠김-> 열쇠탐색 시나리오");
             yield break;
         }
@@ -313,7 +306,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (kitchenKeySearchPoint == null)
         {
-            Debug.Log("[EnemyControl] kitchenKeySearchPoint가 null. 열쇠 탐색 시나리오 박살남");
             yield break;
         }
 
@@ -326,9 +318,7 @@ public class EnemyControl : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("[EnemyControl] (연출부분) 부엌에서 열쇠 찾는중-지연시간 = " + keySearchDuration + "s");
         yield return new WaitForSeconds(keySearchDuration);
-        Debug.Log("[EnemyControl] (연출부분) 오 열쇠 찾았다!");
 
         ChangeState(EnemyState.ReturnBathRoom, "화장실 열쇠 찾음-> 화장실 복귀 시나리오");
     }
@@ -340,7 +330,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (bathRoomDoorPoint == null)
         {
-            Debug.Log("[EnemyControl] bathRoomDoorPoint가 null. 화장실 복귀 시나리오 박살남");
             yield break;
         }
 
@@ -367,7 +356,6 @@ public class EnemyControl : MonoBehaviour
         //잠금상태면 잠금해제 시도
         if (bathRoomDoor.CurState == BathRoom_DoorControl.BathDoorState.Locked)
         {
-            Debug.Log("[EnemyControl] (연출부분) 잠금해제 시도중");
             bool unlocked = bathRoomDoor.EnemyTryUnlock();
             yield return new WaitForSeconds(1.0f); //잠금해제 시간 (임시-연출이랑 묶어야돼서-진짜 짧아야돼)
 
@@ -377,13 +365,9 @@ public class EnemyControl : MonoBehaviour
                 ChangeState(EnemyState.Chasing, "잠금해제->플레이어 발견");
                 yield break;
             }
-
-            if (!unlocked)
-                Debug.Log("[EnemyControl] 잠금해제 실패(문상태가 Locked 이 아니었을 가능성 있음). 진행");
         }
 
         //문 열기 시도 (closed 상태일때)
-        Debug.Log("[EnemyControl] (연출부분) 문 여는 중");
         bool opened = bathRoomDoor.EnemyTryOpenDoor();
         yield return new WaitForSeconds(0.5f); //단순 문여는 시간 (임시-마찬가지로 연출이랑 묶어야함)
 
@@ -399,14 +383,12 @@ public class EnemyControl : MonoBehaviour
             //괴한이 문 열기 시도하는데 여기까지 와서도 열리지 않은 판정이다?
             //무조건 플레이어가 문고리 연타하고 있을 가능성 농후
             //일단 화장실 문 앞 탐색으로 되돌려 보내고, 이쪽에 문 부숴버리는 상태 추가예정
-            Debug.Log("[EnemyControl] 문열기 실패(플레이어 상호작용 연타가능성 있음). 다시 문상태 확인으로");
             ChangeState(EnemyState.GoBathDoor, "문열기 실패->문 상태 다시 체크");
             yield break;
         }
 
         //화장실 진입 연출 들어갈건데, 일단 화장실 안쪽 포인트는 안넣어둔 상태.
         //진입했다고 가정하고 대기상태로 전환.
-        Debug.Log("[EnemyControl] (연출부분) 화장실 진입(가정상황)-일단 문앞에서 대기");
         ChangeState(EnemyState.WaitInBath, "화장실 진입->화장실 대기 시나리오");
     }
 
@@ -417,7 +399,6 @@ public class EnemyControl : MonoBehaviour
     private IEnumerator StateWaitInBathCo()
     {
         if (agent != null) agent.isStopped = true;
-        Debug.Log("[EnemyControl] 화장실에서 대기 시작-대기시간 = " + waitInBathDuration + "s");
         yield return new WaitForSeconds(waitInBathDuration);
         if (agent != null) agent.isStopped = false;
 
@@ -439,7 +420,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (sofaWatchPoint == null)
         {
-            Debug.Log("[EnemyControl] sofaWatchPoint가 null. 소파 이동 시나리오 박살남");
             yield break;
         }
 
@@ -462,7 +442,6 @@ public class EnemyControl : MonoBehaviour
     private IEnumerator StateWatchAtSofaCo()
     {
         if (agent != null) agent.isStopped = true;
-        Debug.Log("[EnemyControl] 소파에서 대기 시작-대기시간 = " + sofaWatchDuration + "s");
         yield return new WaitForSeconds(sofaWatchDuration);
         if (agent != null) agent.isStopped = false;
 
@@ -484,7 +463,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (kitchenEntryPoint == null)
         {
-            Debug.Log("[EnemyControl] kitchenEntryPoint가 null. 부엌 이동 시나리오 박살남");
             yield break;
         }
 
@@ -508,7 +486,6 @@ public class EnemyControl : MonoBehaviour
     private IEnumerator StateWatchAtKitchenCo()
     {
         if (agent != null) agent.isStopped = true;
-        Debug.Log("[EnemyControl] 부엌에서 대기 시작-대기시간 = " + kitchenWatchDuration + "s");
         yield return new WaitForSeconds(kitchenWatchDuration);
         if (agent != null) agent.isStopped = false;
 
@@ -544,7 +521,6 @@ public class EnemyControl : MonoBehaviour
             float lostTime = Time.time - visionSensor.LastSeenTime;
             if (lostTime >= chaseLostReturnTime)
             {
-                Debug.Log("[EnemyControl] 추격중 시야 상실 " + lostTime.ToString("F2")+"s");
                 ChangeState(EnemyState.GoSofa, "추격대상 잃음->전체가 보이는 소파로 이동");
                 return;
             }
@@ -589,8 +565,6 @@ public class EnemyControl : MonoBehaviour
         agent.isStopped = false;
         agent.SetDestination(point.position);
 
-        Debug.Log("[EnemyControl] 이동 시작 : " + debugLabel);
-
         while (true)
         {
             //이동 중 플레이어가 보이면 즉시 추격 인터럽트
@@ -608,8 +582,6 @@ public class EnemyControl : MonoBehaviour
 
             yield return null;
         }
-
-        Debug.Log("[Enemycontrol] 이동 도착 : " + debugLabel);
     }
     #endregion
 

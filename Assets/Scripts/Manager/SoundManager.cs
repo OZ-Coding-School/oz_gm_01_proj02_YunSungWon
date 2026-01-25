@@ -51,7 +51,6 @@ public class SoundManager : MonoBehaviour
         AudioClip clip = FindClipByName(bgmClips, clipName);
         if (clip == null)
         {
-            Debug.LogWarning("[SoundManager] BGM 클립을 찾지 못함: " + clipName);
             return;
         }
 
@@ -106,7 +105,6 @@ public class SoundManager : MonoBehaviour
         AudioClip clip = FindClipByName(sfxClips, clipName);
         if (clip == null)
         {
-            Debug.LogWarning("[SoundManager] SFX 클립을 찾지 못함: " + clipName);
             return;
         }
 

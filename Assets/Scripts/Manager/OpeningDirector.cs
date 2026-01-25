@@ -57,14 +57,11 @@ public class OpeningDirector : MonoBehaviour
     {
         if (openingPlayableDirector == null)
         {
-            Debug.Log("[OpeningDirector] openingPlayableDirector 가 null 상태-체크요망");
             StartLoopImmediately("오프닝 타임라인 없이 진행");
             return;
         }
 
         isOpeningPlaying = true;
-
-        Debug.Log("[OpeningDirector] 오프닝 타임라인 시작됨 " + reason);
 
         //오프닝 중 입력잠금
         SetControlLocked(true);
@@ -77,9 +74,6 @@ public class OpeningDirector : MonoBehaviour
     private void OnOpeningStopped(PlayableDirector director)
     {
         if (!isOpeningPlaying) return;
-
-        Debug.Log("[OpeningDirector] 오프닝 종료됨");
-
         isOpeningPlaying = false;
 
         //입력잠금 해제
@@ -94,10 +88,6 @@ public class OpeningDirector : MonoBehaviour
         if (loopManager != null)
         {
             loopManager.BeginGameFromOpening(reason);
-        }
-        else
-        {
-            Debug.Log("[OpeningDirector] loopManager가 null 상태, 루프시작 실패");
         }
     }
 

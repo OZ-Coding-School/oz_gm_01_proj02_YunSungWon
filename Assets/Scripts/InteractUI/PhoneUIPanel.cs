@@ -298,7 +298,6 @@ public class PhoneUIPanel : UIActionPanelBase
     private void SetState(PhoneState newState, string reason)
     {
         curState = newState;
-        Debug.Log("[PhoneUIPanel] 상태 변경 : "+ newState + "변경이유 = " + reason);
     }
 
     /// <summary>

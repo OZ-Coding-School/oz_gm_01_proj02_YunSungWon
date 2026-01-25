@@ -38,7 +38,6 @@ public class PlayerStealth : MonoBehaviour, IResetTable
     public void ResetState()
     {
         isHidden = false;
-        Debug.Log("[playerStealth] ResetState: 은신상태 초기화");
     }
 
     /// <summary>
@@ -49,6 +48,5 @@ public class PlayerStealth : MonoBehaviour, IResetTable
     {
         if (isHidden == value) return;
         isHidden = value;
-        Debug.Log("[PlayerStealth] isHidden 변경됨 -> " + isHidden);
     }
 }

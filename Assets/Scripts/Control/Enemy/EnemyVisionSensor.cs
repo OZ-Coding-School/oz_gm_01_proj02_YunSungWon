@@ -86,7 +86,6 @@ public class EnemyVisionSensor : MonoBehaviour
     {
         if (playerTarget == null)
         {
-            Debug.Log("지정타겟(플레이어)가 null 상태임-제대로 주입되고 있는지 확인좀");
             isTargetVisible = false;
             return;
         }

@@ -170,8 +170,6 @@ public class EndingDirector : MonoBehaviour
 
         RestartLastPhaseSequence("BeginEnding 호출");
 
-        Debug.Log("[EndingDirector] 엔딩 시작 : " + reason );
-
         //조명연출 라스트페이즈 라이트디렉터 호출
         lastPhaseLightDirector.ApplyLastPhaseLighting("라스트페이즈 진입 : 조명연출 시작");
 
@@ -201,8 +199,6 @@ public class EndingDirector : MonoBehaviour
         {
             checkPointfrontDoorState = FrontDoorControl.FrontDoorState.Closed;
         }
-
-        Debug.Log("[EndingDirector] 체크포인트 저장 : " + reason);
     }
 
     private void RestartLastPhaseSequence(string reason)
@@ -227,7 +223,6 @@ public class EndingDirector : MonoBehaviour
 
     private IEnumerator LastPhaseSequenceCo(string reason)
     {
-        Debug.Log("[EndingDirector] 라스트페이즈 시퀀스 시작 :"+reason);
         SoundManager.Instance.PlaySfxByName("CinematicImpact_SFX");
         if (breakDoorDelay > 0.0f)
         {
@@ -257,7 +252,6 @@ public class EndingDirector : MonoBehaviour
         SoundManager.Instance.PlayBgmByName("LastPhase_BGM");
         if (lastPhaseEnemyPrefab == null || lastPhaseEnemySpawnPoint == null)
         {
-            Debug.Log("[EndingDirector] lastPhaseEnemyPrefab / spawnPoint 둘중 하나 null");
             return;
         }
 
@@ -271,8 +265,6 @@ public class EndingDirector : MonoBehaviour
         {
             control.Initialize(playerTransform, this);
         }
-
-        Debug.Log("[EndingDirector] 라스트 페이즈 괴한 스폰 완료");
     }
 
     /// <summary>
@@ -284,8 +276,6 @@ public class EndingDirector : MonoBehaviour
         if (curLastPhaseEnemy == null) return;
         Destroy(curLastPhaseEnemy);
         curLastPhaseEnemy = null;
-
-        Debug.Log("[EndingDirector] 라스트 페이즈 괴한 제거됨 : " + reason);
     }
 
     /// <summary>
@@ -296,8 +286,6 @@ public class EndingDirector : MonoBehaviour
     {
         SoundManager.Instance.StopBgm();
         if (!IsEnding) return;
-
-        Debug.Log("[EndingDirector] 엔딩 롤백 시작 : " + reason);
 
         //남아있는 괴한 제거
         if (enemyDirector != null)
@@ -325,8 +313,6 @@ public class EndingDirector : MonoBehaviour
 
         //시퀀스 재시작(현관문 파괴/변이괴한 재등장)
         RestartLastPhaseSequence("라스트페이즈 롤백");
-
-        Debug.Log("[EndingDirector] 라스트 페이즈 진입 시점으로 롤백 완료");
     }
 
     private void TeleportPlayerToCheckPoint(Transform point)
@@ -372,8 +358,6 @@ public class EndingDirector : MonoBehaviour
         if (!IsEnding) return;
         if (isEndingCutScenePlaying) return;
 
-        Debug.Log("[EndingDirector] 탈출 성공 : " + reason );
-
         BeginFinalEndingCutScene("루프 탈출 성공");
     }
 
@@ -386,8 +370,6 @@ public class EndingDirector : MonoBehaviour
     private void BeginFinalEndingCutScene(string reason)
     {
         isEndingCutScenePlaying = true;
-
-        Debug.Log("[EndingDirector] 최종 엔딩 컷씬 시작 : " + reason);
 
         //변이괴한 정리
         DespawnLastPhaseEnemy("최종컷씬 시작 : 변이괴한 제거");
@@ -460,8 +442,6 @@ public class EndingDirector : MonoBehaviour
     {
         if (!isEndingCutScenePlaying) return;
 
-        Debug.Log("[EndingDirector] 최종엔딩 컷씬 종료됨");
-
         //암전,텍스트 있으면 보이게 하고,
         if (blackOverlay != null) blackOverlay.alpha = 1.0f;
         if (endText != null)
@@ -475,7 +455,6 @@ public class EndingDirector : MonoBehaviour
 
         //근데? 게임 컨셉상? 그냥 종료해버릴거야 컷씬 끝나면-추후수정 가능성있긴함
         Application.Quit();
-        Debug.Log("[EndingDirector] 게임 강제종료됨");
     }
 
     /// <summary>
@@ -483,8 +462,6 @@ public class EndingDirector : MonoBehaviour
     /// </summary>
     private void EndEnding(string reason)
     {
-        Debug.Log("[EndingDirector] 엔딩 종료됨 : " + reason);
-
         if (loopManager == null) loopManager = LoopManager.Instance;
         if (loopManager != null) loopManager.SetResetBlocked(false);
 

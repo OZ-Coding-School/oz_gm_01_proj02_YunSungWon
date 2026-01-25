@@ -48,7 +48,6 @@ public class PlayerControl : MonoBehaviour
         //필수 참조 방어
         if (eyePivot == null)
         {
-            Debug.LogError("[PlayerFpsController] eyePivot이 null. Player 하위 눈 위치 오브젝트를 연결필요");
             enabled = false;
             return;
         }

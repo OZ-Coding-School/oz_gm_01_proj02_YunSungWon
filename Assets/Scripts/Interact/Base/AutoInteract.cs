@@ -104,7 +104,6 @@ public class AutoInteract : MonoBehaviour
                 yield return null;
             }
         }
-        Debug.Log("[AutoInteract]실제 상호작용 들어갑니다 이제");
         //실제 상호작용 실행
         ExecuteInteract(target);
 

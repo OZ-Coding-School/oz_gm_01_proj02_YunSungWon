@@ -41,10 +41,6 @@ public class LastPhaseLightDirector : MonoBehaviour
     {
         //ColorAdjustments 오버라이드 꼭 해당 프로필에 있어야 함
         bool found = globalVolume.profile.TryGet(out colorAdjustments);
-        if (!found || colorAdjustments == null)
-        {
-            Debug.LogWarning("[LastPhaseLightDirector] Global Volume Profile에 Color Adjustments 오버라이드 없음! 확인요망");
-        }
     }
 
     /// <summary>
@@ -60,8 +56,6 @@ public class LastPhaseLightDirector : MonoBehaviour
 
         //Post Exposure 변경
         SetPostExposure(lastPhasePostExposure);
-
-        Debug.Log("[LastPhaseLightingDirector] 라스트 페이즈 조명 전환 완료 : " + reason);
     }
 
     private void SetLightsEnabled(List<Light> lights, bool enabled)

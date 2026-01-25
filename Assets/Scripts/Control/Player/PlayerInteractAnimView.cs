@@ -71,8 +71,6 @@ public class PlayerInteractAnimView : MonoBehaviour
     /// <param name="typeId"></param>
     public bool TryPlay(int typeId)
     {
-        Debug.Log("[AnimView]TryPlay 호출됨 IsBusy상태" + IsBusy);
-
         if (isBusy) return false;
 
         isBusy = true;
@@ -106,7 +104,6 @@ public class PlayerInteractAnimView : MonoBehaviour
     /// </summary>
     public void OnAutoInteractAnimationMoment()
     {
-        Debug.Log("[AnimView] 이벤트 모먼트 호출됨");
         isAnimEventArrived = true;
     }
 
@@ -115,7 +112,6 @@ public class PlayerInteractAnimView : MonoBehaviour
     /// </summary>
     public void OnAutoInteractAnimationEnd()
     {
-        Debug.Log("[AnimView] 이벤트 엔드 호출됨");
         Release();
     }
 
