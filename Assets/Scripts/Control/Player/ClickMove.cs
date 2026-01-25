@@ -86,8 +86,6 @@ public class ClickMove : MonoBehaviour
         curTarget = target;
         Vector3 destination = target.InteractPoint.position;
         MoveTo(destination);
-
-        Debug.Log("[ClickMove] 타겟 지정됨,여기로 이동할게?" + target.name);
     }
 
     /// <summary>

@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 9089015698756219492}
   - component: {fileID: 8729679974667852505}
   - component: {fileID: -9001601778174532984}
+  - component: {fileID: 5320829564566043065}
   m_Layer: 0
   m_Name: TEST_LastEnemy
   m_TagString: LastPhaseEnemy
@@ -251,7 +252,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chaseUpdateInterval: 0.5
-  killdistance: 8
 --- !u!54 &-9001601778174532984
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -279,3 +279,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5320829564566043065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4626731640683790335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f5298d2d62bfe04d8f97ffc02e99b63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catchType: 1
+  enemyAnimator: {fileID: 0}

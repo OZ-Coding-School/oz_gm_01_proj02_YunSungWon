@@ -26,6 +26,7 @@ public class PlayerAnimationDriver : MonoBehaviour
     [Header("떨림 제거용")]
     [SerializeField] private float speedEpsilon = 0.01f;
 
+
     //Animator 속도 파라미터 해시
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
 

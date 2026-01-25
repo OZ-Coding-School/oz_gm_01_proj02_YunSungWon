@@ -36,7 +36,6 @@ public class Exit_Trigger : MonoBehaviour
         //여기에 방어 추가
         if (EndingDirector.Instance != null && EndingDirector.Instance.IsEnding)
         {
-            Debug.Log("[EXit_Trigger] 라스트페이즈 중->현관 ExitTrigger 무시");
             return;
         }
 

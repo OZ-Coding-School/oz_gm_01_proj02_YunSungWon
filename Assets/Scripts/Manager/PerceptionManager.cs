@@ -99,10 +99,6 @@ public class PerceptionManager : MonoBehaviour ,IResetTable
 
         Instance = this;
 
-        //DDL은 딱히 없어도 될거 같긴한데.. 어차피 씬 하나에서 다 이루어질거니까.
-        //일단 집어넣고 나중에 생각
-        //DontDestroyOnLoad(gameObject);
-
         curState = initialState;
     }
 
@@ -146,7 +142,6 @@ public class PerceptionManager : MonoBehaviour ,IResetTable
         randomTimer = 0.0f;
 
         SetState(PerceptionState.Hallucination, "루프 리셋 : 인지상태 디폴트값으로 초기화");
-        Debug.Log("[PerceptionManager] ResetState : 인지상태만 초기화됨.(누적/단서발견 유지)");
     }
 
     /// <summary>
@@ -171,7 +166,6 @@ public class PerceptionManager : MonoBehaviour ,IResetTable
     {
         if (discoveredEvidenceIds.Contains(evidenceId))
         {
-            Debug.Log("[PerceptionManager] 이미 발견된 단서-> 현실파라미터 누적 중복처리 방지 : " + evidenceId);
             return false;
         }
 
@@ -181,10 +175,6 @@ public class PerceptionManager : MonoBehaviour ,IResetTable
         realityMeter += meterGain;
 
         if (realityMeter > 1.0f) realityMeter = 1.0f;
-
-        Debug.Log("[PerceptionManager] 단서 발견 :"
-            + evidenceId + "/ 변경점:" + oldMeter.ToString("F2") + "->" + realityMeter.ToString("F2")
-            + "/이유: " + reason);
 
         //단서 발견시 짧은 순간동안 현실 반영-플레이어가 인지할 수 있을정도로만,
         if (giveInstantGlimpseOnEvidence)
@@ -299,8 +289,6 @@ public class PerceptionManager : MonoBehaviour ,IResetTable
     {
         PerceptionState oldState = curState;
         curState = newState;
-
-        Debug.Log("[PerceptionManager] 상태 변경 : " + oldState + "->" + newState + "/변경사유 : " + reason);
 
         if (StateChanged != null) StateChanged.Invoke(oldState, newState, reason);
     }

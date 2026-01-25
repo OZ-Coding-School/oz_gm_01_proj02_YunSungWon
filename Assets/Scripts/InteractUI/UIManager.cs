@@ -74,7 +74,6 @@ public class UIManager : MonoBehaviour, IResetTable
     {
         if (panel == null)
         {
-            Debug.Log("[UIManager] OpenPanel 실패 - Panel이 null");
             return;
         }
         
@@ -94,8 +93,6 @@ public class UIManager : MonoBehaviour, IResetTable
 
         //패널 열기
         curPanel.Open(context);
-
-        Debug.Log("[UIManager] 패널 오픈됨" + panel.name + "사유=" + context.Reason);
     }
 
     /// <summary>
@@ -107,7 +104,6 @@ public class UIManager : MonoBehaviour, IResetTable
         if (curPanel != null)
         {
             curPanel.Close();
-            Debug.Log("[UIManager] 패널 닫힘" + curPanel.name + "사유=" + reason);
         }
         
         curPanel = null;

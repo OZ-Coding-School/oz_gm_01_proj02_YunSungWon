@@ -35,6 +35,12 @@ public class MedicineUIPanel : UIActionPanelBase
     [Header("MedicineInteractable 참조")]
     [SerializeField] private MedicineInteractable medicine;
 
+    //사운드 관련
+    private void OnEnable()
+    {
+        SoundManager.Instance.PlaySfxByName("PillInteract_SFX");
+    }
+
     protected override void OnOpenActionPanel(InteractContext context)
     {
         medicine = null;
@@ -85,6 +91,8 @@ public class MedicineUIPanel : UIActionPanelBase
     /// </summary>
     private void OnClickUse()
     {
+        SoundManager.Instance.PlaySfxByName("PillSwallow_SFX");
+
         if (medicine == null)
         {
             RefreshUI();

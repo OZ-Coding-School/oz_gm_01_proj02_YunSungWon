@@ -104,8 +104,6 @@ public class EnemyDirector : MonoBehaviour
     /// <param name="method"></param>
     private void OnBreakInSucceeded(LoopManager.BreakInMethod method)
     {
-        Debug.Log("[EnemyDirector] 침입 성공 이벤트 수신" + method);
-
         if (isLoopEnemyBlocked) return;
 
         if (curEnemy != null) return;
@@ -121,8 +119,7 @@ public class EnemyDirector : MonoBehaviour
     private void OnBreakInFailedByBattery(float emergencyTimeSeconds)
     {
         if (isLoopEnemyBlocked) return;
-
-        Debug.Log("[EnemyDirector] 괴한 대사 : 뭐야? 배터리 다 됐어? 미치겠네..");
+        SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
     }
 
     /// <summary>
@@ -134,7 +131,6 @@ public class EnemyDirector : MonoBehaviour
     {
         if (enemyPrefab == null || enemySpawnPoint == null)
         {
-            Debug.Log("[EnemyDirector] enemyPrefab / enemySpawnPoint 둘중 null ");
             return;
         }
 
@@ -170,7 +166,6 @@ public class EnemyDirector : MonoBehaviour
     {
         if (frontDoorControl == null)
         {
-            Debug.Log("[EnemyDirector] frontDoorControl가 null 문연출없이 진행");
             yield break;
         }
 
@@ -190,8 +185,10 @@ public class EnemyDirector : MonoBehaviour
                 frontDoorControl.EnemyTryUnlock("도어락 침입");
             }
 
+            SoundManager.Instance.PlaySfxByName("DoorLockPW_SFX");
             //문 여는 템포
             if (doorOpenDelay > 0.0f) yield return new WaitForSeconds(doorOpenDelay);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
 
             frontDoorControl.EnemyTryOpenDoor("도어락 침입");
             yield break;
@@ -207,7 +204,9 @@ public class EnemyDirector : MonoBehaviour
                 frontDoorControl.EnemyTryUnlock("비상키 침입");
             }
 
+            SoundManager.Instance.PlaySfxByName("DoorTryLock_SFX");
             if(doorOpenDelay>0.0f) yield return new WaitForSeconds(doorOpenDelay);
+            SoundManager.Instance.PlaySfxByName("DoorOpen_SFX");
 
             frontDoorControl.EnemyTryOpenDoor("비상키 침입");
         }
@@ -229,7 +228,6 @@ public class EnemyDirector : MonoBehaviour
     /// <param name="reason"></param>
     public void ForceDespawnEnemy(string reason)
     {
-        Debug.Log("[EnemyDirector] ForceDespawnEnemy 호출됨 : " + reason);
         DeSpawnEnemy();
     }
 
@@ -241,7 +239,6 @@ public class EnemyDirector : MonoBehaviour
     public void SetLoopEnemyBlocked(bool blocked, string reason)
     {
         isLoopEnemyBlocked = blocked;
-        Debug.Log("[EnemyDirector] SetLoopEnemyBlocked 호출됨 : " + blocked + "==" + reason);
 
         if (blocked)
         {

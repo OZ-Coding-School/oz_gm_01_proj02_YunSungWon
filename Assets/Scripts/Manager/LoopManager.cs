@@ -134,13 +134,6 @@ public class LoopManager : MonoBehaviour
         playerAgent = playerTransform.GetComponent<NavMeshAgent>();
     }
 
-    private void Start()
-    {
-        //첫 루프 시작
-        //StartNewLoop();
-        //여기 부분 이제 오프닝 연출 들어가고 거기서 타이밍 잡아줄거야. 일단 주석처리해서 테스트 후에 지울것
-    }
-
     private void Update()
     {
         //오프닝연출 중일때 차단
@@ -175,7 +168,6 @@ public class LoopManager : MonoBehaviour
         if (resetTables.Contains(resetTable)) return;
 
         resetTables.Add(resetTable);
-        Debug.Log("[LoopManager] ResetTable 등록됨, 현재 등록 개수 = " + resetTables.Count);
     }
 
     /// <summary>
@@ -185,11 +177,6 @@ public class LoopManager : MonoBehaviour
     public void UnRegisterResetTable(IResetTable resetTable)
     {
         if (resetTable == null) return;
-
-        if (resetTables.Remove(resetTable))
-        {
-            Debug.Log("[LoopManager] ResetTable 해제됨, 현재 등록 개수 = " + resetTables.Count);
-        }
     }
 
     /// <summary>
@@ -216,6 +203,8 @@ public class LoopManager : MonoBehaviour
     /// </summary>
     private void StartNewLoop()
     {
+        if (loopCount == 0) SoundManager.Instance.PlayBgmByName("RoomLoop_BGM");
+
         loopCount += 1;
         //시간 초기화
         elapsedSeconds = 0.0f;
@@ -232,7 +221,6 @@ public class LoopManager : MonoBehaviour
 
         ResetAllResetTables();
         TeleportPlayerToStart();
-        OnLoopStart();
 
         bathVCam.Priority = 0;
         kitchenVcam.Priority = 0;
@@ -249,13 +237,12 @@ public class LoopManager : MonoBehaviour
     {
         if (isResetBlocked)
         {
-            Debug.Log("[LoopManager] ResetLoop 무시됨(리셋블락 트루상태) / reason = " + reason);
             return;
         }
 
         if (isResetting) return;
-
         StartCoroutine(LoopResetCo(reason));
+        SoundManager.Instance.StopSfx();
     }
 
     /// <summary>
@@ -266,7 +253,6 @@ public class LoopManager : MonoBehaviour
     private IEnumerator LoopResetCo(string reason)
     {
         isResetting = true;
-        Debug.Log("[LoopManager] 루프리셋 = " + reason);
 
         //한프레임 쉬고
         yield return null;
@@ -291,7 +277,6 @@ public class LoopManager : MonoBehaviour
     public void SetScenarioBlocked(bool blocked, string reason)
     {
         isScenarioBlocked = blocked;
-        Debug.Log("[LoopManager] SetScenarioBlocked 호출 : "+ blocked + "==" + reason);
 
         if (blocked)
         {
@@ -314,7 +299,6 @@ public class LoopManager : MonoBehaviour
     public void SetBatteryRemoved(bool value)
     {
         batteryRemoved = value;
-        Debug.Log("[LoopManager] 배터리 제거상태 = " + batteryRemoved);
     }
 
     /// <summary>
@@ -363,21 +347,11 @@ public class LoopManager : MonoBehaviour
     #region 연출 훅 부분
     //======================================================================연출 훅 부분=====//
     /// <summary>
-    /// [연출 훅] 루프 시작 지점(나중에 카메라/사운드/텍스트 붙일 자리)
-    /// </summary>
-    private void OnLoopStart()
-    {
-        Debug.Log("[LoopManager] 루프 시작됨 현재루프 =" + loopCount + "침입시간 = " + breakInSeconds.ToString("F2") + "s");
-    }
-
-    /// <summary>
     /// [연출 훅] 배터리 제거로 인해 1차 침입이 실패했을때 호출
     /// -추후 괴한의" 왜 안열려?" 음성 이나 텍스트, 문 흔들리는 연출 들어갈 곳
     /// </summary>
     private void OnBreakInFailedByBattery()
     {
-        Debug.Log("[LoopManager] 1차침입실패(배터리제거됨).2차 침입시간 = " + emergencyKeySeconds.ToString("F2") + "s");
-
         //외부로 배터리제거로 인한 침입 지연 타이밍 알림
         BreakInFailedByBattery?.Invoke(emergencyKeySeconds); //관련 제거 예정
     }
@@ -389,7 +363,6 @@ public class LoopManager : MonoBehaviour
     /// <param name="method"></param>
     private void OnBreakInSuccess(BreakInMethod method)
     {
-        Debug.Log("[LoopManager] 침입 성공 기능메서드 = " + method + "발생시간 = " + elapsedSeconds.ToString("F2") + "s");
         BreakInSucceeded?.Invoke(method);
     }
     //=================================================================//
@@ -408,7 +381,6 @@ public class LoopManager : MonoBehaviour
     {
         if (playerTransform == null || loopStartPoint == null)
         {
-            Debug.Log("[LoopManager] 위치변경 실패! = 플레이어 위치값 or 루프시작지점 null!");
             return;
         }
 
@@ -425,7 +397,6 @@ public class LoopManager : MonoBehaviour
 
             //네비메쉬 워프로 안전하게 동기화
             playerAgent.Warp(targetPos);
-            Debug.Log("[LoopManager] 네비메쉬 워프로 이동됨");
 
             playerTransform.rotation = targetRot;
 
@@ -437,18 +408,15 @@ public class LoopManager : MonoBehaviour
         if (characterController != null && characterController.enabled)
         {
             characterController.enabled = false;
-            Debug.Log("[LoopManager] 컨트롤러 비활성화");
             playerTransform.position = targetPos;
             playerTransform.rotation = targetRot;
             characterController.enabled = true;
-            Debug.Log("[LoopManager] 컨트롤러 활성화");
             return;
         }
 
         //네비메쉬,컨트롤러 둘다 아니면 직접 이동
         playerTransform.position = targetPos;
         playerTransform.rotation = targetRot;
-        Debug.Log("[LoopManager] 일반 텔레포트 처리 완료");
     }
     //=================================================================//
     #endregion
@@ -459,7 +427,6 @@ public class LoopManager : MonoBehaviour
     /// <param name="reason"></param>
     public void BeginGameFromOpening(string reason)
     {
-        Debug.Log("[LoopManager] BeginGameFromOpening 호출됨 : " + reason);
         isGameRunning = true;
         isScenarioBlocked = false;
         
@@ -473,8 +440,6 @@ public class LoopManager : MonoBehaviour
     /// <param name="reason"></param>
     public void PrepareForOpening(string reason)
     {
-        Debug.Log("[LoopManager] PrepareForOpening 호출됨 : " + reason);
-
         isGameRunning = false;
         isScenarioBlocked = true;
         breakInPhase = BreakInPhase.Done;

@@ -14,9 +14,6 @@ public class LastPhaseEnemyControl : MonoBehaviour
     [Header("추격 갱신 간격")]
     [SerializeField] private float chaseUpdateInterval = 0.5f;
 
-    [Header("잡힘(롤백) 판정 거리")]
-    [SerializeField] private float killdistance = 1.0f;
-
     //NavMesh 이동 담당
     private NavMeshAgent agent;
 
@@ -55,13 +52,6 @@ public class LastPhaseEnemyControl : MonoBehaviour
         {
             timer = 0.0f;
             agent.SetDestination(playerTransform.position);
-        }
-
-        //잡힘(킬) 판정 플레이어 기준
-        float playerDist = Vector3.Distance(transform.position, playerTransform.position);
-        if (playerDist <= killdistance)
-        {
-            endingDirector.RollbackTocheckPoint("라스트 페이즈때 변이괴한에게 잡힘");
         }
     }
 }

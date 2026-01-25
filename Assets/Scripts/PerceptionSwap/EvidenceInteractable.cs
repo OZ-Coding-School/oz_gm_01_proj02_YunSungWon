@@ -40,13 +40,5 @@ public class EvidenceInteractable : InteractableBase
         }
 
         bool applied = perceptionManager.RegisterEvience(evidenceId, meterGain, reason);
-        if (applied)
-        {
-            Debug.Log("[EvidenceInteractable] 단서 반영 완료 : " + evidenceId);
-        }
-        else
-        {
-            Debug.Log("[EvidenceInteractable] 단서 반영 실패(중복가능성 있음) : " + evidenceId);
-        } 
     }
 }

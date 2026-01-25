@@ -21,9 +21,6 @@ public class PlayerInputGate : MonoBehaviour
     [Header("PlayerInteractor 컴포넌트")]
     [SerializeField] private PlayerInteractor playerInteractor;
 
-    //[Header("PlayerControl 컴포넌트")]
-    //[SerializeField] private PlayerControl playerControl;
-
     [Header("플레이어 NavMesh 컴포넌트")]
     [SerializeField] private NavMeshAgent navMeshAgent;
 
@@ -35,7 +32,6 @@ public class PlayerInputGate : MonoBehaviour
         clickMove = GetComponent<ClickMove>();
         autoInteract = GetComponent<AutoInteract>();
         playerInteractor = GetComponent<PlayerInteractor>();
-        //playerControl = GetComponent<PlayerControl>();
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
@@ -51,7 +47,7 @@ public class PlayerInputGate : MonoBehaviour
         if (autoInteract != null) autoInteract.enabled = enabled;
         if (playerInteractor != null) playerInteractor.enabled = enabled;
 
-        //컨트롤 부분은 오히려 충동문제 나서 빼버리는게 나을지도,
+        //컨트롤 부분은 오히려 충돌문제 나서 빼버리는게 나을지도,
         //어차피 UI상호작용은 탑뷰에서만 가능하게 할거니까
         //if (playerControl != null) playerControl.enabled = enabled;
 
